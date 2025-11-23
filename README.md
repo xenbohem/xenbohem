@@ -1,8 +1,8 @@
 # Xen’s Adventure Quest Café — README
 
-Welcome to **Xen’s Adventure Quest Café project**, a whimsical, immersive, and interactive digital universe blending storytelling, membership systems, animated worlds, and creative character realms — all woven together with React, Netlify, Supabase, and magic.
+Welcome to **Xen’s Adventure Quest Café project**, a whimsical, immersive, and interactive digital universe blending storytelling, membership systems, animated worlds, and creative character realms — all woven together with The Spirit of God, React, Netlify and Supabase.
 
-> **"A café between worlds, built by Chimera Cats and fueled by adventure with Yeshua (King Jesus Christ!)."**
+> **"About A café between worlds, Parallel Universes if you will - created by a group of Chimera Cats who are led and fueled with adventure by Yeshua."**
 
 ---
 
