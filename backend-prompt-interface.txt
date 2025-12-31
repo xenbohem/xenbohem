@@ -1,0 +1,1 @@
+“Generate a modern web dashboard interface for a SaaS project management tool — include sidebar nav, top bar, project-list table view, and a card showing project summary stats.”
