@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar Nav -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>ProjectHub</h2>
+                <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            </div>
+            <ul class="nav-list">
+                <li><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Teams</a></li>
+                <li><a href="#"><i class="fas fa-calendar"></i> Calendar</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search projects...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="top-bar-right">
+                    <button class="notification-btn"><i class="fas fa-bell"></i></button>
+                    <div class="user-profile">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar">
+                        <span>John Doe</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content">
+                <!-- Project Summary Stats Card -->
+                <div class="stats-card">
+                    <h3>Project Summary</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-folder"></i>
+                            <div>
+                                <span class="stat-number">24</span>
+                                <span class="stat-label">Total Projects</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-play-circle"></i>
+                            <div>
+                                <span class="stat-number">12</span>
+                                <span class="stat-label">Active</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <span class="stat-number">8</span>
+                                <span class="stat-label">Completed</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="stat-number">4</span>
+                                <span class="stat-label">Overdue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project-List Table View -->
+                <div class="table-container">
+                    <h3>Projects</h3>
+                    <table class="project-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Team</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Website Redesign</td>
+                                <td><span class="status active">Active</span></td>
+                                <td>2023-10-15</td>
+                                <td>Design Team</td>
+                                <td><button class="action-btn">Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td>Mobile App Dev</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td>2023-09-30</td>
+                                <td>Dev Team</td>
+                                <td><button class="action-btn">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>Marketing Campaign</td>
+                                <td><span class="status overdue">Overdue</span></td>
+                                <td>2023-09-20</td>
+                                <td>Marketing Team</td>
+                                <td><button class="action-btn">Edit</button></td>
+                            </tr>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
