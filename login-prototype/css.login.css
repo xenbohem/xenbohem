@@ -1,0 +1,68 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: #0b0b0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  color: #e6e6e6;
+}
+
+/* Panel */
+.login-panel {
+  background: rgba(179,179,179,0.12);
+  border: 1px solid #3b2a4d;
+  padding: 3rem;
+  width: 340px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(59,42,77,0.6);
+}
+
+/* Title */
+.site-title {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: 0.9rem;
+  opacity: 0.75;
+  margin-bottom: 2rem;
+}
+
+/* Inputs */
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+}
+
+input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #3b2a4d;
+  padding: 0.6rem;
+  margin-bottom: 1.2rem;
+  color: #e6e6e6;
+}
+
+/* Button */
+button {
+  width: 100%;
+  background: #3b2a4d;
+  color: #e6e6e6;
+  border: none;
+  padding: 0.7rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #4a3a68;
+  box-shadow: 0 0 10px #6495ED;
+}
