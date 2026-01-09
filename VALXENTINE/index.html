@@ -1,1 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blog</title>
+<!-- Google font for fancy title -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+<!-- Google font for body -->
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet" />
+<style>
+  body {
+    font-family: 'Special Elite', monospace;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background-color: #2d004d; /* Deep purple background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
+  /* Fancy Valentine Title */
+  @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+  .fancy-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 4em;
+    background: linear-gradient(45deg, violet, cornflowerblue);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 10px violet) drop-shadow(0 0 20px cornflowerblue);
+    transform: rotate(-10deg) skewX(-10deg);
+    margin-bottom: 20px;
+    text-align: center;
+    width: fit-content;
+  }
+
+  /* Header with avatar and title, avatar glows ghostly violet */
+  header {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  header div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  /* Subtler, ghostly violet glow for avatar */
+  #avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    /* Ghostly violet glow */
+    box-shadow: 0 0 25px rgba(142, 68, 173, 0.2);
+    transition: box-shadow 0.3s ease;
+  }
+  #avatar:hover {
+    box-shadow: 0 0 30px rgba(142, 68, 173, 0.3);
+  }
+  h1 {
+    font-family: 'Special Elite', monospace;
+    font-size: 2.5em;
+    margin: 0;
+    color: #fff;
+  }
+
+  /* Search container */
+  #search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #search-input {
+    padding: 10px;
+    width: 250px;
+    font-family: 'Special Elite', monospace;
+    font-size: 1em;
+    border-radius: 4px;
+    border: none;
+    box-shadow: inset 0 0 3px #fff, 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  #search-button {
+    padding: 10px 15px;
+    font-family: 'Special Elite', monospace;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    box-shadow: inset 0 0 3px #fff, 0 2px 4px rgba(0,0,0,0.3);
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+  #search-button:hover {
+    background-color: #222;
+    transform: translateY(-1px);
+  }
+
+  /* Product grid layout */
+#products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* Favorites section styling, hidden initially */
+#favorites-section {
+  display: none;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+}
+#favorites-section.active {
+  display: block;
+}
+
+/* Favorites heading style */
+#favorites h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Special Elite', monospace;
+  font-size: 2em;
+  color: #fff;
+}
+
+/* Style for product cards (papers) with shiny, game-card look */
+.post {
+  position: relative;
+  background: linear-gradient(135deg, violet, cornflowerblue);
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset 0 0 5px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: #fff;
+  overflow: hidden; /* for pseudo-element */
+}
+
+/* Shine overlay to mimic glossy card shine */
+.post::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  transform: rotate(20deg);
+  pointer-events: none;
+}
+
+/* Additional hover effect for the cards */
+.post:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+
+/* Product image styling */
+.product-image {
+  max-width: 100%;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Product title styling */
+.product-title {
+  font-family: 'Special Elite', monospace;
+  font-size: 1em;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Affiliate link button style */
+a.affiliate-link {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+  box-shadow: inset 0 0 3px #fff, 0 2px 4px rgba(0,0,0,0.3);
+}
+a.affiliate-link:hover {
+  background-color: #222;
+}
+
+/* Footnote styling */
+#footnote {
+  margin-top: 40px;
+  padding: 15px;
+  max-width: 900px;
+  text-align: center;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.95em;
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+}
+</style>
+</head>
+<body>
+
+<!-- Glowing, skewed "Valentine" title above the header -->
+<h1 class="fancy-title">Valentine</h1>
+
+<!-- Header with avatar and title, avatar glows ghostly violet -->
+<header>
+  <div>
+    <!-- Replace src below with your actual avatar URL -->
+    <img id="avatar" src="https://3society.neocities.org/girliechaticonx3n.png" alt="Your Avatar" />
+    <h1>Xen's Recommendations</h1>
+  </div>
+</header>
+
+<!-- Lock/unlock heart button -->
+<button id="lock-toggle" title="Click to Lock/Unlock">❤️</button>
+
+<!-- Search bar -->
+<div id="search-container">
+  <input type="text" id="search-input" placeholder="Search for Valentine's products..." />
+  <button id="search-button">Search</button>
+</div>
+
+<!-- Product grid -->
+<div id="products"></div>
+
+<!-- Favorites section, hidden initially -->
+<div id="favorites-section">
+  <h2>Your Favorites</h2>
+  <div id="favorites"></div>
+</div>
+
+<!-- Footnote excerpt -->
+<div id="footnote">
+  Every purchase helps connect users and people in a loving way. Thank you for supporting love and connection.
+</div>
+
+<script>
+  const products = [
+    // Your full product list...
+    {
+      title: "Valentine's Heart Candy",
+      image: "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+      link: "https://affiliate-link.com/candy"
+    },
+    {
+      title: "Valentine's Card",
+      image: "https://images.unsplash.com/photo-1606821826514-6b3b8b0c1f4b",
+      link: "https://affiliate-link.com/card"
+    },
+    {
+      title: "Romantic Gift Box",
+      image: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df",
+      link: "https://affiliate-link.com/gift"
+    },
+    {
+      title: "Valentine's Tea Set",
+      image: "https://images.unsplash.com/photo-1518610043997-2f1b962e2e2f",
+      link: "https://affiliate-link.com/tea"
+    },
+    {
+      title: "Skincare Set",
+      image: "https://images.unsplash.com/photo-1595433562694-7e7a8a6f7b18",
+      link: "https://affiliate-link.com/skincare"
+    },
+    {
+      title: "Scented Candles",
+      image: "https://images.unsplash.com/photo-1520962916064-16b7f66d6a62",
+      link: "https://affiliate-link.com/candles"
+    },
+    {
+      title: "Cosmetics Kit",
+      image: "https://images.unsplash.com/photo-1617633899534-1f5f11d1b5a2",
+      link: "https://affiliate-link.com/cosmetics"
+    },
+    {
+      title: "Valentine T-Shirt",
+      image: "https://images.unsplash.com/photo-1549924231-f129b911e442",
+      link: "https://affiliate-link.com/tshirt"
+    },
+    {
+      title: "Coffee Mug",
+      image: "https://images.unsplash.com/photo-1542739676-45d8dfea0a03",
+      link: "https://affiliate-link.com/mug"
+    },
+    {
+      title: "Leather Journal",
+      image: "https://images.unsplash.com/photo-1556742044-3c52d6e88d99",
+      link: "https://affiliate-link.com/journal"
+    },
+    {
+      title: "Lipstick",
+      image: "https://images.unsplash.com/photo-1590074908034-0b7a6e2b4a76",
+      link: "https://affiliate-link.com/lipstick"
+    },
+    {
+      title: "Perfume Bottle",
+      image: "https://images.unsplash.com/photo-1614916931897-2b975d0f85e4",
+      link: "https://affiliate-link.com/perfume"
+    },
+    {
+      title: "Striped Sweater",
+      image: "https://images.unsplash.com/photo-1520962916064-16b7f66d6a62",
+      link: "https://affiliate-link.com/sweater"
+    },
+    {
+      title: "Beret Hat",
+      image: "https://images.unsplash.com/photo-1601822312806-6d3f0d4b4e00",
+      link: "https://affiliate-link.com/beret"
+    }
+  ];
+
+  const lockBtn = document.getElementById('lock-toggle');
+  const favoritesSection = document.getElementById('favorites-section');
+  const favoritesContainer = document.getElementById('favorites');
+  const searchInput = document.getElementById('search-input');
+
+  let isLocked = true;
+
+  lockBtn.addEventListener('click', () => {
+    isLocked = !isLocked;
+    if (isLocked) {
+      lockBtn.textContent = '❤️';
+      lockBtn.classList.remove('unlocked');
+      favoritesSection.classList.remove('active');
+    } else {
+      lockBtn.textContent = '💖';
+      lockBtn.classList.add('unlocked');
+      favoritesSection.classList.add('active');
+      showFavorites();
+    }
+  });
+
+  // Display all products
+  const container = document.getElementById('products');
+
+  function displayProducts(productsList) {
+    container.innerHTML = '';
+    productsList.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `
+        <img src="${p.image}" alt="${p.title}" class="product-image"/>
+        <div class="product-title">${p.title}</div>
+        <a href="${p.link}" class="affiliate-link" target="_blank">Buy Now</a>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // Show favorites
+  function showFavorites() {
+    const favorites = [
+      products[0], products[2], products[4], products[10], products[12]
+    ];
+    favoritesContainer.innerHTML = '';
+    favorites.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `
+        <img src="${p.image}" alt="${p.title}" class="product-image"/>
+        <div class="product-title">${p.title}</div>
+        <a href="${p.link}" class="affiliate-link" target="_blank">Buy Now</a>
+      `;
+      favoritesContainer.appendChild(div);
+    });
+  }
+
+  // Search functions
+  document.getElementById('search-button').addEventListener('click', handleSearch);
+  document.getElementById('search-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSearch();
+  });
+
+  function handleSearch() {
+    const query = searchInput.value.toLowerCase();
+    const filtered = products.filter(p => p.title.toLowerCase().includes(query));
+    displayProducts(filtered);
+  }
+
+  // Show all products initially
+  displayProducts(products);
+</script>
+
+</body>
+</html>
