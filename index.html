@@ -249,6 +249,42 @@ musicBtn.onclick=()=>{
   musicOpen=!musicOpen;
   musicDrawer.style.top = musicOpen ? "0px" : "-260px";
 }
+  const nameGate = document.getElementById("name-gate");
+const usernameInput = document.getElementById("username-input");
+const enterCafe = document.getElementById("enter-cafe");
+
+function openCafe(name){
+  // personalize forum header
+  const forumStage = document.getElementById("forum-stage");
+  forumStage.innerHTML = `
+    <h2>Welcome, ${name} of the Indigo Table ☕</h2>
+    <p>The café awaits your thoughts…</p>
+  `;
+  // hide overlay
+  nameGate.style.display="none";
+}
+
+// Check if name already stored
+const storedName = localStorage.getItem("chimeraName");
+if(storedName){
+  openCafe(storedName);
+}else{
+  nameGate.style.display="flex";
+}
+
+enterCafe.onclick = () => {
+  const name = usernameInput.value.trim();
+  if(name){
+    localStorage.setItem("chimeraName", name);
+    openCafe(name);
+  }
+}
+
+// Optional: allow pressing Enter key
+usernameInput.addEventListener("keypress",(e)=>{
+  if(e.key==="Enter") enterCafe.click();
+});
+
 </script>
 
 </body>
