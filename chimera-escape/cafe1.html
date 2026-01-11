@@ -354,6 +354,54 @@ enterCafe.onclick = () => {
 usernameInput.addEventListener("keypress",(e)=>{
   if(e.key==="Enter") enterCafe.click();
 });
+  const postsDiv = document.getElementById("posts");
+const sendBtn = document.getElementById("send-post");
+const userPost = document.getElementById("user-post");
+
+let username = localStorage.getItem("chimeraName") || "Guest";
+
+let forum = JSON.parse(localStorage.getItem("chimeraForum")) || [
+  {author:"Star", text:"Some teas remember hands, not lips. Earl Grey has been held by many who needed it."}
+];
+
+function renderPosts(){
+  postsDiv.innerHTML="";
+  forum.forEach(p=>{
+    const div=document.createElement("div");
+    div.className="post"+(p.author==="Star"?" star":"");
+    div.innerHTML=`<div class="author">${p.author}</div>${p.text}`;
+    postsDiv.appendChild(div);
+  });
+  postsDiv.scrollTop=postsDiv.scrollHeight;
+}
+
+renderPosts();
+
+sendBtn.onclick=()=>{
+  if(!userPost.value.trim()) return;
+  forum.push({author:username,text:userPost.value});
+  userPost.value="";
+  localStorage.setItem("chimeraForum",JSON.stringify(forum));
+  renderPosts();
+  starReply();
+}
+
+function starReply(){
+  const delay=7000+Math.random()*3000;
+  setTimeout(()=>{
+    const replies=[
+      "Hans insists Earl Grey tastes like regret. I think it tastes like people trying again.",
+      "If tea remembers, then this cup remembers you.",
+      "Some leaves hold more than flavor. They hold stories left behind.",
+      "Milo swears the steam carries whispers. I think he’s right."
+    ];
+    const text=replies[Math.floor(Math.random()*replies.length)];
+    forum.push({author:"Star",text});
+    localStorage.setItem("chimeraForum",JSON.stringify(forum));
+    renderPosts();
+  },delay);
+}
+
 </script>
 
 </body>
