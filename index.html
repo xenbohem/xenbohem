@@ -126,6 +126,71 @@ body{
   margin-bottom:15px;
   opacity:.9;
 }
+  #name-gate{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(10,10,20,0.9);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  backdrop-filter:blur(6px);
+  flex-direction:column;
+  color:#f0e6ff;
+  animation:fadeIn 1s ease forwards;
+}
+
+#name-box{
+  background:rgba(25,20,45,0.95);
+  padding:40px 50px;
+  border-radius:20px;
+  box-shadow:0 0 60px rgba(120,90,200,0.4);
+  text-align:center;
+}
+
+#name-box h2{
+  font-family:Cinzel,serif;
+  font-size:28px;
+  margin-bottom:15px;
+  letter-spacing:2px;
+}
+
+#name-box p{
+  font-size:16px;
+  margin-bottom:20px;
+}
+
+#username-input{
+  padding:10px 15px;
+  border-radius:12px;
+  border:none;
+  width:200px;
+  font-size:16px;
+  margin-right:10px;
+}
+
+#enter-cafe{
+  padding:10px 20px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#6fa8ff,#d8d8dc);
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
+
+#enter-cafe:hover{
+  transform:scale(1.05);
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
 </style>
 </head>
 
