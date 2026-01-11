@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Chimera Quest Café</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --cornflower:#6fa8ff;
+  --cafe-grey:#d8d8dc;
+  --coffee:#4b3325;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at center, transparent 60%, rgba(75,51,37,0.6) 100%),
+    linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Inter,system-ui;
+  overflow:hidden;
+}
+#cafe-frame{
+  width:92vw;
+  height:90vh;
+  background:rgba(10,10,20,0.75);
+  border-radius:22px;
+  box-shadow:0 0 80px rgba(0,0,0,0.7);
+  backdrop-filter:blur(12px);
+  position:relative;
+  overflow:hidden;
+}
+#header{
+  height:70px;
+  background:linear-gradient(180deg,rgba(40,35,70,0.9),rgba(10,10,20,0.7));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Cinzel,serif;
+  letter-spacing:3px;
+  font-size:28px;
+  color:#e9dcff;
+}
+.drawer-btn{
+  position:absolute;
+  top:18px;
+  font-size:24px;
+  cursor:pointer;
+}
+#music-btn{left:20px;}
+#tea-btn{right:20px;}
+#forum-stage{
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:70%;
+  height:75%;
+  background:rgba(25,20,45,0.9);
+  border-radius:20px;
+  padding:20px;
+  color:white;
+  display:flex;
+  flex-direction:column;
+}
+#posts{
+  flex:1;
+  overflow-y:auto;
+}
+.post{
+  padding:10px;
+  margin-bottom:10px;
+  background:rgba(255,255,255,0.05);
+  border-radius:10px;
+}
+.star{
+  background:rgba(140,110,255,0.2);
+}
+.author{
+  font-size:12px;
+  opacity:.7;
+}
+#reply-box{
+  display:flex;
+  gap:10px;
+}
+#user-post{
+  flex:1;
+  border:none;
+  border-radius:10px;
+  padding:10px;
+}
+#send-post{
+  border:none;
+  border-radius:10px;
+  padding:10px 20px;
+}
+#tea-drawer{
+  position:absolute;
+  right:-300px;
+  top:0;
+  width:300px;
+  height:100%;
+  background:#3a2a1f;
+  transition:.6s;
+  padding:90px 20px;
+}
+#music-drawer{
+  position:absolute;
+  top:-250px;
+  left:0;
+  width:100%;
+  height:250px;
+  background:#1b1533;
+  transition:.6s;
+  padding:90px 20px;
+}
+#name-gate{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+#name-box{
+  background:#221a3a;
+  padding:40px;
+  border-radius:20px;
+}
+</style>
+</head>
+
+<body>
+<div id="cafe-frame">
+
+<div id="name-gate">
+  <div id="name-box">
+    <h2>Welcome to Chimera Quest Café</h2>
+    <input id="username-input" placeholder="Your name"/>
+    <button id="enter-cafe">Enter</button>
+  </div>
+</div>
+
+<div id="header">
+  <span id="music-btn" class="drawer-btn">🎶</span>
+  CHIMERA QUEST CAFÉ
+  <span id="tea-btn" class="drawer-btn">☕</span>
+</div>
+
+<div id="forum-stage">
+  <h3>Does Earl Grey remember the people who drank it before us?</h3>
+  <div id="posts"></div>
+  <div id="reply-box">
+    <input id="user-post" placeholder="Write..."/>
+    <button id="send-post">Send</button>
+  </div>
+</div>
+
+<div id="tea-drawer">☕ Star’s Tea Shelf</div>
+<div id="music-drawer">🎶 Café Soundtrack</div>
+
+</div>
+
+<script>
+// Name
+let name = localStorage.getItem("chimeraName");
+const nameGate = document.getElementById("name-gate");
+if(!name) nameGate.style.display="flex"; else nameGate.style.display="none";
+
+document.getElementById("enter-cafe").onclick=()=>{
+  name = document.getElementById("username-input").value;
+  localStorage.setItem("chimeraName",name);
+  nameGate.style.display="none";
+};
+
+// Drawers
+const tea=document.getElementById("tea-drawer");
+const music=document.getElementById("music-drawer");
+document.getElementById("tea-btn").onclick=()=>tea.style.right=tea.style.right==="0px"?"-300px":"0px";
+document.getElementById("music-btn").onclick=()=>music.style.top=music.style.top==="0px"?"-250px":"0px";
+
+// Anchors
+const anchors=[
+ {author:"Star",text:"Before this café had walls, it was just a kettle on a borrowed stove. People came not for tea, but for somewhere to rest."},
+ {author:"Hans",text:"Earl Grey was here before most of us. I distrust any tea that has outlived its drinkers."},
+ {author:"Milo",text:"Sometimes the plants lean toward the windows, like they’re trying to remember who used to sit there."}
+];
+
+let forum = JSON.parse(localStorage.getItem("chimeraForum")) || [];
+
+const posts=document.getElementById("posts");
+
+function render(){
+  posts.innerHTML="";
+  anchors.forEach(m=>{
+    const d=document.createElement("div");
+    d.className="post star";
+    d.innerHTML=`<div class="author">${m.author}</div>${m.text}`;
+    posts.appendChild(d);
+  });
+  forum.forEach(m=>{
+    const d=document.createElement("div");
+    d.className="post"+(m.author!=="Guest"?" star":"");
+    d.innerHTML=`<div class="author">${m.author}</div>${m.text}`;
+    posts.appendChild(d);
+  });
+  posts.scrollTop=posts.scrollHeight;
+}
+
+render();
+
+document.getElementById("send-post").onclick=()=>{
+  const t=document.getElementById("user-post").value;
+  if(!t) return;
+  forum.push({author:name||"Guest",text:t});
+  document.getElementById("user-post").value="";
+  localStorage.setItem("chimeraForum",JSON.stringify(forum));
+  render();
+  setTimeout(()=>{
+    const replies=[
+      "If tea remembers, then this cup remembers you. What do you think it remembers?",
+      "Milo says every cup has a secret. Do you think yours does?",
+      "Hans would argue with that… but I’m curious what you think."
+    ];
+    forum.push({author:"Star",text:replies[Math.floor(Math.random()*replies.length)]});
+    localStorage.setItem("chimeraForum",JSON.stringify(forum));
+    render();
+  },7000);
+};
+
+document.getElementById("user-post").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    document.getElementById("send-post").click();
+  }
+});
+</script>
+
+</body>
+</html>
