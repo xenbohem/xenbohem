@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Chimera Quest Café - Debug</title>
+
+<style>
+:root{
+  --cornflower:#6fa8ff;
+  --cafe-grey:#d8d8dc;
+  --coffee:#4b3325;
+  --deep-indigo:#1a1633;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at center, transparent 60%, rgba(75,51,37,0.6) 100%),
+    linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Inter,system-ui;
+  overflow:hidden;
+}
+
+/* Cinematic frame - Visible by default */
+#cafe-frame{
+  width:92vw;
+  height:90vh;
+  background:rgba(10,10,20,0.75);
+  border-radius:22px;
+  box-shadow:0 0 80px rgba(0,0,0,0.7);
+  backdrop-filter:blur(12px);
+  position:relative;
+  overflow:hidden;
+  opacity: 1; /* Visible by default */
+}
+
+/* Header */
+#header{
+  height:70px;
+  background:linear-gradient(180deg,rgba(40,35,70,0.9),rgba(10,10,20,0.7));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Cinzel,serif;
+  letter-spacing:3px;
+  font-size:28px;
+  color:#e9dcff;
+  text-shadow:0 0 12px rgba(160,120,255,0.8);
+  position:relative;
+  z-index:5;
+}
+
+/* Icons */
+.drawer-btn{
+  position:absolute;
+  top:18px;
+  font-size:24px;
+  cursor:pointer;
+  opacity:0.7;
+  transition:.3s;
+}
+.drawer-btn:hover{opacity:1;}
+
+#music-btn{left:20px;}
+#tea-btn{right:20px;}
+
+/* Forum stage */
+#forum-stage{
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:70%;
+  height:75%;
+  background:rgba(25,20,45,0.9);
+  border-radius:20px;
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.6),
+    0 0 40px rgba(120,90,200,0.3);
+  padding:30px;
+  color:#eee;
+  overflow:auto;
+}
+
+/* Post form */
+#post-form {
+  margin-bottom: 20px;
+}
+
+#post-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #eee;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+#post-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6fa8ff, #d8d8dc);
+  color: #000;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#post-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Posts container */
+#posts {
+  margin-top: 20px;
+}
+
+.post {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border-left: 5px solid #6fa8ff;
+}
+
+.post-author {
+  font-weight: bold;
+  color: #e9dcff;
+}
+
+.post-content {
+  margin-top: 5px;
+}
+
+/* Right Tea Drawer */
+#tea-drawer{
+  position:absolute;
+  top:0;
+  right:-320px;
+  width:320px;
+  height:100%;
+  background:linear-gradient(180deg,#3a2a1f,#1d1510);
+  transition:.6s cubic-bezier(.7,.1,.3,1);
+  padding:90px 20px 20px;
+  color:#f4e7d3;
+  z-index:4;
+  box-shadow:-20px 0 50px rgba(0,0,0,0.6);
+}
+
+/* Top Music Drawer */
+#music-drawer{
+  position:absolute;
+  top:-260px;
+  left:0;
+  width:100%;
+  height:260px;
+  background:linear-gradient(180deg,#1b1533,#0b0818);
+  transition:.6s cubic-bezier(.7,.1,.3,1);
+  padding:90px 30px 20px;
+  color:#e6ddff;
+  z-index:4;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
+
+.drawer-title{
+  font-family:Cinzel,serif;
+  font-size:20px;
+  letter-spacing:2px;
+  margin-bottom:15px;
+  opacity:.9;
+}
+
+/* Terminal-style Sign Up Screen - Forced to show */
+#name-gate{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+  flex-direction:column;
+  color:#00ff00;
+  font-family:'Courier New', monospace;
+}
+
+.terminal {
+  width: 90%;
+  max-width: 800px;
+  height: 80%;
+  background-color: #000;
+  border: 2px solid #00ff00;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+input {
+  background: none;
+  border: none;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  outline: none;
+  width: 100%;
+}
+
+input[type="password"] {
+  -webkit-text-security: disc;
+}
+
+#skip-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #00ff00;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="cafe-frame">
+
+  <div id="header">
+    <span id="music-btn" class="drawer-btn">🎶</span>
+    CHIMERA QUEST CAFÉ
+    <span id="tea-btn" class="drawer-btn">☕</span>
+      </div>
+
+  <!-- Terminal-style Sign Up Screen Overlay -->
+  <div id="name-gate">
+    <div class="terminal" id="terminal">
+      <div id="output"></div>
+      <div id="input-area" style="display: none;">
+        <span id="prompt"></span><input type="text" id="user-input" autofocus>
+      </div>
+      <button id="skip-btn">Skip to Café (Debug)</button>
+    </div>
+  </div>
+
+  <div id="forum-stage">
+    <h2>Welcome to the Café</h2>
+    <p>This is where the Chimera forum will live.  
+    Threads, Star’s replies, and conversations will appear here.</p>
+    <div id="post-form">
+      <input type="text" id="post-input" placeholder="Share your thoughts at the Indigo Table..." />
+      <button id="post-btn">Post</button>
+    </div>
+    <div id="posts">
+      <!-- Posts will be added here dynamically -->
+    </div>
+  </div>
+
+  <div id="tea-drawer">
+    <div class="drawer-title">☕ Star’s Tea Shelf</div>
+    <p>Coming soon…</p>
+    <p>Affiliate tea links, lore, and rituals will live here.</p>
+  </div>
+
+  <div id="music-drawer">
+    <div class="drawer-title">🎶 Café Soundtrack</div>
+    <p>Coming soon…</p>
+    <p>Ambient music, Hans’ dramatic playlists, seasonal tracks.</p>
+  </div>
+
+</div>
+
+<script>
+console.log('Script loaded. Starting debug...');
+alert('Script loaded! If you see this, JS is working.');
+
+const teaBtn = document.getElementById("tea-btn");
+const teaDrawer = document.getElementById("tea-drawer");
+const musicBtn = document.getElementById("music-btn");
+const musicDrawer = document.getElementById("music-drawer");
+const nameGate = document.getElementById("name-gate");
+const output = document.getElementById('output');
+const inputArea = document.getElementById('input-area');
+const prompt = document.getElementById('prompt');
+const userInput = document.getElementById('user-input');
+const skipBtn = document.getElementById('skip-btn');
+
+let teaOpen = false;
+let musicOpen = false;
+let step = 0;
+let nickname = '';
+let email = '';
+let password = '';
+let currentUser = null;
+
+console.log('Elements grabbed. Setting up event listeners...');
+alert('Elements grabbed. Setting up buttons...');
+
+// Drawer buttons
+teaBtn.onclick = () => {
+  console.log('Tea button clicked.');
+  teaOpen = !teaOpen;
+  teaDrawer.style.right = teaOpen ? "0px" : "-320px";
+};
+
+musicBtn.onclick = () => {
+  console.log('Music button clicked.');
+  musicOpen = !musicOpen;
+  musicDrawer.style.top = musicOpen ? "0px" : "-260px";
+};
+
+// Skip button for debug
+skipBtn.onclick = () => {
+  console.log('Skip button clicked. Revealing café...');
+  alert('Skipping to café...');
+  currentUser = { nickname: 'DebugUser' };
+  revealCafe();
+};
+
+// Terminal functions
+function addToOutput(text) {
+  console.log('Adding to output:', text);
+  output.innerHTML += text + '<br>';
+  output.scrollTop = output.scrollHeight;
+}
+
+function promptUser() {
+  console.log('Prompting user, step:', step);
+  if (step === 0) {
+    prompt.textContent = 'Enter your nickname: ';
+    userInput.type = 'text';
+    inputArea.style.display = 'block';
+    userInput.focus();
+  } else if (step === 1) {
+    prompt.textContent = 'Enter your email address: ';
+    userInput.type = 'email';
+    inputArea.style.display = 'block';
+    userInput.focus();
+  } else if (step === 2) {
+    prompt.textContent = 'Enter your password: ';
+    userInput.type = 'password';
+    inputArea.style.display = 'block';
+    userInput.focus();
+  }
+}
+
+userInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const value = userInput.value.trim();
+    userInput.value = '';
+    console.log('User input:', value, 'Step:', step);
+    if (step === 0) {
+      nickname = value;
+      addToOutput(`Nickname: ${nickname}`);
+      step++;
+      promptUser();
+    } else if (step === 1) {
+      email = value;
+      addToOutput(`Email: ${email}`);
+      step++;
+      promptUser();
+    } else if (step === 2) {
+      password = value;
+      addToOutput(`Password: ********`);
+      inputArea.style.display = 'none';
+      currentUser = { nickname: nickname };
+      addToOutput('Sign-up complete! Accessing the Café...');
+      setTimeout(() => revealCafe(), 2000);
+    }
+  }
+});
+
+function revealCafe() {
+  console.log('Revealing café...');
+  alert('Revealing café...');
+  nameGate.style.display = 'none';
+  openCafe(currentUser.nickname);
+  loadPosts();
+}
+
+function openCafe(name) {
+  console.log('Opening café for:', name);
+  const forumStage = document.getElementById("forum-stage");
+  forumStage.innerHTML = `
+    <h2>Welcome, ${name} of the Indigo Table ☕</h2>
+    <p>The café awaits your thoughts…</p>
+    <div id="post-form">
+      <input type="text" id="post-input" placeholder="Share your thoughts at the Indigo Table..." />
+      <button id="post-btn">Post</button>
+    </div>
+    <div id="posts">
+      <!-- Posts will be added here dynamically -->
+    </div>
+  `;
+  document.getElementById('post-btn').addEventListener('click', addPost);
+  document.getElementById('post-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') addPost();
+  });
+}
+
+function addPost() {
+  const postInput = document.getElementById('post-input');
+  const content = postInput.value.trim();
+  if (content && currentUser) {
+    console.log('Adding post:', content);
+    const post = {
+      author: currentUser.nickname,
+      content: content,
+      timestamp: new Date().toLocaleString()
+    };
+    let posts = JSON.parse(localStorage.getItem('cafePosts')) || [];
+    posts.push(post);
+    localStorage.setItem('cafePosts', JSON.stringify(posts));
+    postInput.value = '';
+    loadPosts();
+  }
+}
+
+function loadPosts() {
+  console.log('Loading posts...');
+  const postsContainer = document.getElementById('posts');
+  postsContainer.innerHTML = '';
+  const posts = JSON.parse(localStorage.getItem('cafePosts')) || [];
+  posts.forEach(post => {
+    const postDiv = document.createElement('div');
+    postDiv.className = 'post';
+    postDiv.innerHTML = `
+      <div class="post-author">${post.author} - ${post.timestamp}</div>
+      <div class="post-content">${post.content}</div>
+    `;
+    postsContainer.appendChild(postDiv);
+  });
+}
+
+// Start immediately
+console.log('Starting terminal...');
+alert('Starting terminal...');
+addToOutput('Welcome to the Chimera Quest Café Sign-Up Terminal!');
+promptUser();
+
+</script>
+
+</body>
+</html>
