@@ -245,23 +245,59 @@ const musicBtn = document.getElementById("music-btn");
 const teaBtn = document.getElementById("tea-btn");
 const musicDrawer = document.getElementById("music-drawer");
 const teaDrawer = document.getElementById("tea-drawer");
+const musicHit = document.getElementById("music-hit");
+const teaHit = document.getElementById("tea-hit");
 
 let musicOpen = false;
 let teaOpen = false;
 
-/* FORCE CLOSED ON LOAD */
-musicDrawer.style.top = "-260px";
-teaDrawer.style.right = "-320px";
+/* Force closed on load */
+closeMusic();
+closeTea();
 
-musicBtn.onclick = () => {
-  musicOpen = !musicOpen;
-  musicDrawer.style.top = musicOpen ? "0px" : "-260px";
+/* ---------- FUNCTIONS ---------- */
+function openMusic() {
+  musicOpen = true;
+  musicDrawer.style.top = "0px";
+  musicHit.classList.add("active");
+}
+
+function closeMusic() {
+  musicOpen = false;
+  musicDrawer.style.top = "-260px";
+  musicHit.classList.remove("active");
+}
+
+function openTea() {
+  teaOpen = true;
+  teaDrawer.style.right = "0px";
+  teaHit.classList.add("active");
+}
+
+function closeTea() {
+  teaOpen = false;
+  teaDrawer.style.right = "-320px";
+  teaHit.classList.remove("active");
+}
+
+/* ---------- BUTTON TOGGLES ---------- */
+musicBtn.onclick = (e) => {
+  e.stopPropagation();
+  musicOpen ? closeMusic() : openMusic();
 };
 
-teaBtn.onclick = () => {
-  teaOpen = !teaOpen;
-  teaDrawer.style.right = teaOpen ? "0px" : "-320px";
+teaBtn.onclick = (e) => {
+  e.stopPropagation();
+  teaOpen ? closeTea() : openTea();
 };
+
+/* ---------- CLICK-AWAY CLOSE ---------- */
+musicHit.onclick = closeMusic;
+teaHit.onclick = closeTea;
+
+/* Prevent clicks INSIDE drawers from closing them */
+musicDrawer.onclick = (e) => e.stopPropagation();
+teaDrawer.onclick = (e) => e.stopPropagation();
 
 /* ---------------- MUSIC PLAYER ---------------- */
 const tracks = [
