@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -157,6 +157,34 @@ body{
   border:2px solid var(--cornflower);
   padding:20px;
 }
+  /* Click-away zones */
+.drawer-hit {
+  position: absolute;
+  z-index: 3;
+  display: none;
+}
+
+/* When drawers are open, hit zones activate */
+.drawer-hit.active {
+  display: block;
+}
+
+/* Music drawer hit zone (below it) */
+#music-hit {
+  top: 260px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 260px);
+}
+
+/* Tea drawer hit zone (left of it) */
+#tea-hit {
+  top: 0;
+  left: 0;
+  width: calc(100% - 320px);
+  height: 100%;
+}
+
 </style>
 </head>
 
