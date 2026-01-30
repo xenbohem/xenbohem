@@ -334,7 +334,48 @@ function loadPosts(){
     box.appendChild(div);
   });
 }
-</script>
 
+const chime = document.getElementById("access-chime");
+const terminal = document.getElementById("terminal-greeting");
+
+let hasUnlockedThisSession = false;
+
+async function applyAuthState(session) {
+  if (session?.user?.email_confirmed_at) {
+    document.body.classList.remove("locked");
+    document.body.classList.add("logged-in");
+
+    if (!hasUnlockedThisSession) {
+      hasUnlockedThisSession = true;
+
+      // Play chime (user has already interacted by logging in)
+      chime?.play().catch(() => {});
+
+      // Show terminal greeting
+      terminal.classList.remove("hidden");
+      terminal.textContent = "ACCESS GRANTED — Welcome to Valxentine Café ☕";
+    }
+  } else {
+    document.body.classList.add("locked");
+    document.body.classList.remove("logged-in");
+  }
+}
+
+// On page load
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  applyAuthState(session);
+})();
+
+// React to auth changes
+supabase.auth.onAuthStateChange((event, session) => {
+  applyAuthState(session);
+
+  if (event === "SIGNED_OUT") {
+    hasUnlockedThisSession = false;
+    terminal.classList.add("hidden");
+  }
+});
+</script>
 </body>
 </html>
