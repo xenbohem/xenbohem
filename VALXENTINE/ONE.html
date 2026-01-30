@@ -426,6 +426,82 @@ supabase.auth.onAuthStateChange((event, session) => {
     terminal.classList.add("hidden");
   }
 });
+  // -----------------------------
+// MUSIC PLAYER
+// -----------------------------
+
+const tracks = [
+  { title: "Midnight Espresso", src: "music/track1.mp3" },
+  { title: "Lavender Static", src: "music/track2.mp3" },
+  { title: "Neon Teacups", src: "music/track3.mp3" },
+  { title: "After-Hours Indigo", src: "music/track4.mp3" },
+  { title: "Rain on Glass", src: "music/track5.mp3" },
+  { title: "Terminal Waltz", src: "music/track6.mp3" },
+  { title: "Last Call at Valxentine", src: "music/track7.mp3" }
+];
+
+const audio = document.getElementById("audio-player");
+const playBtn = document.getElementById("play-btn");
+const nextBtn = document.getElementById("next-btn");
+const prevBtn = document.getElementById("prev-btn");
+const trackTitle = document.getElementById("track-title");
+const trackList = document.getElementById("track-list");
+
+let currentTrack = 0;
+let isPlaying = false;
+
+// Build track list
+tracks.forEach((track, index) => {
+  const li = document.createElement("li");
+  li.textContent = track.title;
+  li.onclick = () => loadTrack(index, true);
+  trackList.appendChild(li);
+});
+
+function loadTrack(index, play = false) {
+  currentTrack = index;
+  audio.src = tracks[index].src;
+  trackTitle.textContent = tracks[index].title;
+
+  [...trackList.children].forEach((li, i) => {
+    li.classList.toggle("active", i === index);
+  });
+
+  if (play) {
+    audio.play();
+    isPlaying = true;
+    playBtn.textContent = "⏸";
+  }
+}
+
+playBtn.onclick = () => {
+  if (!audio.src) loadTrack(currentTrack);
+
+  if (isPlaying) {
+    audio.pause();
+    playBtn.textContent = "▶";
+  } else {
+    audio.play();
+    playBtn.textContent = "⏸";
+  }
+  isPlaying = !isPlaying;
+};
+
+nextBtn.onclick = () => {
+  loadTrack((currentTrack + 1) % tracks.length, true);
+};
+
+prevBtn.onclick = () => {
+  loadTrack((currentTrack - 1 + tracks.length) % tracks.length, true);
+};
+
+audio.onended = () => {
+  loadTrack((currentTrack + 1) % tracks.length, true);
+};
+
+// Load first track (but DO NOT autoplay)
+loadTrack(0, false);
+
 </script>
 </body>
 </html>
