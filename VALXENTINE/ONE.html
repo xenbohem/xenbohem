@@ -250,10 +250,24 @@ body.logged-in .locked-panel {
     <span id="tea-btn" class="drawer-btn">☕</span>
   </div>
 
-  <div id="music-drawer">
-    <div class="drawer-title">🎶 Café Soundtrack</div>
-    Ambient playlists coming soon…
+  <div class="drawer-title">🎶 Café Soundtrack</div>
+
+<div id="music-player">
+  <div id="track-title">—</div>
+
+  <audio id="audio-player" preload="metadata"></audio>
+
+  <div class="music-controls">
+    <button id="prev-btn">⏮</button>
+    <button id="play-btn">▶</button>
+    <button id="next-btn">⏭</button>
   </div>
+
+  <ul id="track-list">
+    <!-- populated by JS -->
+  </ul>
+</div>
+
 
   <div id="tea-drawer">
     <div class="drawer-title">☕ Star’s Tea Shelf</div>
