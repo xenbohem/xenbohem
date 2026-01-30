@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Chimera Quest Café</title>
+
+<style>
+:root{
+  --cornflower:#6fa8ff;
+  --cafe-grey:#d8d8dc;
+  --coffee:#4b3325;
+  --deep-indigo:#1a1633;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at center, transparent 60%, rgba(75,51,37,0.6) 100%),
+    linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Inter,system-ui;
+  overflow:hidden;
+}
+
+/* ---------------- FRAME ---------------- */
+#cafe-frame{
+  width:92vw;
+  height:90vh;
+  background:rgba(10,10,20,0.75);
+  border-radius:22px;
+  box-shadow:0 0 80px rgba(0,0,0,0.7);
+  backdrop-filter:blur(12px);
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------------- HEADER ---------------- */
+#header{
+  height:70px;
+  background:linear-gradient(180deg,rgba(40,35,70,0.9),rgba(10,10,20,0.7));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Cinzel,serif;
+  letter-spacing:3px;
+  font-size:26px;
+  color:#e9dcff;
+  text-shadow:0 0 12px rgba(160,120,255,0.8);
+  z-index:5;
+}
+
+.drawer-btn{
+  position:absolute;
+  top:18px;
+  font-size:24px;
+  cursor:pointer;
+  opacity:0.7;
+  transition:.3s;
+}
+.drawer-btn:hover{opacity:1;}
+
+#music-btn{left:20px;}
+#tea-btn{right:20px;}
+
+/* ---------------- CENTER ---------------- */
+#forum-stage{
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:65%;
+  height:75%;
+  background:rgba(25,20,45,0.9);
+  border-radius:20px;
+  box-shadow:inset 0 0 40px rgba(0,0,0,0.6);
+  padding:30px;
+  color:#eee;
+  overflow:auto;
+}
+
+/* ---------------- POSTS ---------------- */
+.post{
+  background:rgba(255,255,255,0.05);
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:10px;
+  border-left:5px solid var(--cornflower);
+}
+
+/* ---------------- MUSIC DRAWER ---------------- */
+#music-drawer{
+  position:absolute;
+  top:-260px;                /* ✅ START CLOSED */
+  left:0;
+  width:100%;
+  height:260px;
+  background:linear-gradient(180deg,#1b1533,#0b0818);
+  transition:.6s cubic-bezier(.7,.1,.3,1);
+  padding:90px 30px 20px;
+  color:#e6ddff;
+  z-index:4;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
+
+#music-player button{
+  background:rgba(255,255,255,0.1);
+  border:none;
+  color:var(--cornflower);
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ---------------- TEA / SOCIAL DRAWER ---------------- */
+#tea-drawer{
+  position:absolute;
+  top:0;
+  right:-320px;
+  width:320px;
+  height:100%;
+  background:linear-gradient(180deg,#3a2a1f,#1d1510);
+  transition:.6s cubic-bezier(.7,.1,.3,1);
+  padding:90px 20px 20px;
+  color:#f4e7d3;
+  z-index:4;
+  box-shadow:-20px 0 50px rgba(0,0,0,0.6);
+}
+
+.social a{
+  display:block;
+  margin:10px 0;
+  color:var(--cornflower);
+  text-decoration:none;
+}
+
+/* ---------------- TERMINAL GATE ---------------- */
+#name-gate{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+  font-family:"Courier New", monospace;
+  color:var(--cornflower);
+}
+
+.terminal{
+  width:80%;
+  max-width:700px;
+  border:2px solid var(--cornflower);
+  padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="cafe-frame">
+
+  <div id="header">
+    <span id="music-btn" class="drawer-btn">🎶</span>
+    CHIMERA QUEST CAFÉ
+    <span id="tea-btn" class="drawer-btn">☕</span>
+  </div>
+
+  <!-- MUSIC DRAWER -->
+  <div id="music-drawer">
+    <div id="music-player">
+      <div id="track-title">—</div>
+      <audio id="audio-player"></audio>
+      <button id="prev-btn">⏮</button>
+      <button id="play-btn">▶</button>
+      <button id="next-btn">⏭</button>
+    </div>
+  </div>
+
+  <!-- TEA / SOCIAL -->
+  <div id="tea-drawer">
+    <h3>☕ Find Us</h3>
+    <div class="social">
+      <a href="#">Instagram</a>
+      <a href="#">Bluesky</a>
+      <a href="#">YouTube</a>
+      <a href="#">Discord</a>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div id="forum-stage">
+    <h2>Welcome to the Café</h2>
+    <p>Threads and conversations will appear here.</p>
+  </div>
+
+</div>
+
+<!-- TERMINAL -->
+<div id="name-gate">
+  <div class="terminal">
+    ACCESS GRANTED — Welcome ☕
+    <br><br>
+    <button onclick="document.getElementById('name-gate').style.display='none'">
+      Enter Café
+    </button>
+  </div>
+</div>
+
+<script>
+/* ---------------- DRAWERS ---------------- */
+const musicBtn = document.getElementById("music-btn");
+const teaBtn = document.getElementById("tea-btn");
+const musicDrawer = document.getElementById("music-drawer");
+const teaDrawer = document.getElementById("tea-drawer");
+
+let musicOpen = false;
+let teaOpen = false;
+
+/* FORCE CLOSED ON LOAD */
+musicDrawer.style.top = "-260px";
+teaDrawer.style.right = "-320px";
+
+musicBtn.onclick = () => {
+  musicOpen = !musicOpen;
+  musicDrawer.style.top = musicOpen ? "0px" : "-260px";
+};
+
+teaBtn.onclick = () => {
+  teaOpen = !teaOpen;
+  teaDrawer.style.right = teaOpen ? "0px" : "-320px";
+};
+
+/* ---------------- MUSIC PLAYER ---------------- */
+const tracks = [
+  {title:"Midnight Espresso",src:"music/1.mp3"},
+  {title:"Lavender Static",src:"music/2.mp3"},
+  {title:"Neon Teacups",src:"music/3.mp3"},
+  {title:"After-Hours Indigo",src:"music/4.mp3"},
+  {title:"Rain on Glass",src:"music/5.mp3"},
+  {title:"Terminal Waltz",src:"music/6.mp3"},
+  {title:"Last Call",src:"music/7.mp3"}
+];
+
+let i = 0;
+const audio = document.getElementById("audio-player");
+const title = document.getElementById("track-title");
+const play = document.getElementById("play-btn");
+
+function loadTrack(n){
+  i = n;
+  audio.src = tracks[i].src;
+  title.textContent = tracks[i].title;
+}
+
+play.onclick = () => {
+  if(!audio.src) loadTrack(0);
+  audio.paused ? audio.play() : audio.pause();
+};
+
+loadTrack(0);
+</script>
+
+</body>
+</html>
