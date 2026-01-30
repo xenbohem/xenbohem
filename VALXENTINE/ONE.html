@@ -66,7 +66,24 @@ body{
 
 #music-btn{left:20px;}
 #tea-btn{right:20px;}
+<body class="locked">
 
+<audio id="access-chime" src="sounds/access-granted.mp3" preload="auto"></audio>
+
+<div id="terminal-greeting" class="terminal hidden">
+  ACCESS GRANTED — Welcome to Valxentine Café ☕
+</div>
+
+<!-- Drawers -->
+<div id="left-drawer" class="drawer locked-drawer">Music</div>
+<div id="right-drawer" class="drawer locked-drawer">Social</div>
+
+<!-- Center content -->
+<div id="center-panel" class="locked-panel">
+  <!-- threaded comments live here -->
+</div>
+
+</body>
 /* DRAWERS */
 #music-drawer{
   position:absolute;
@@ -184,6 +201,43 @@ input{
   outline:none;
   width:100%;
 }
+  /* DEFAULT: LOCKED */
+body.locked {
+  --ui-opacity: 0.35;
+}
+
+.locked-drawer,
+.locked-panel {
+  opacity: var(--ui-opacity);
+  pointer-events: none;
+  filter: blur(1px);
+  transition: all 0.4s ease;
+}
+
+/* UNLOCKED */
+body.logged-in {
+  --ui-opacity: 1;
+}
+
+body.logged-in .locked-drawer,
+body.logged-in .locked-panel {
+  opacity: 1;
+  pointer-events: auto;
+  filter: none;
+}
+
+/* Terminal greeting */
+.terminal {
+  font-family: "JetBrains Mono", monospace;
+  color: #6495ED;
+  text-shadow: 0 0 6px rgba(100,149,237,0.7);
+  margin: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
 </style>
 </head>
 
