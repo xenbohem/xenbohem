@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chimera Quest Café</title>
+
+  <!-- Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #2f3440;
+      --panel: #3a3f4b;
+      --ink: #e8ecf1;
+      --accent: #6495ed; /* cornflower blue */
+      --muted: #9aa3b2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #3a3f4b 0%, #242833 100%);
+      color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Terminal greeting */
+    #terminal {
+      position: fixed;
+      inset: 0;
+      background: #0e1117;
+      color: var(--accent);
+      font-family: "Share Tech Mono", monospace;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    /* Drawers */
+    .drawer {
+      position: fixed;
+      top: 0;
+      width: 300px;
+      height: 100%;
+      background: rgba(30,34,45,0.95);
+      backdrop-filter: blur(6px);
+      transition: transform 0.35s ease;
+      z-index: 50;
+      padding: 16px;
+    }
+
+    .drawer.left { left: 0; transform: translateX(-100%); }
+    .drawer.right { right: 0; transform: translateX(100%); }
+
+    .drawer.open { transform: translateX(0); }
+
+    .drawer h3 {
+      margin-top: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .edge {
+      position: fixed;
+      top: 0;
+      width: 18px;
+      height: 100%;
+      z-index: 60;
+      cursor: pointer;
+    }
+
+    .edge.left { left: 0; }
+    .edge.right { right: 0; }
+
+    /* Main café */
+    #app {
+      display: none;
+      height: 100%;
+      padding: 40px;
+      text-align: center;
+    }
+
+    #greeting {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 20px;
+      max-width: 720px;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* Auth */
+    #auth input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #auth button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #0e1117;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* Forum */
+    #forum textarea {
+      width: 100%;
+      min-height: 80px;
+      border-radius: 8px;
+      padding: 10px;
+      border: none;
+    }
+
+    .post {
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    audio { width: 100%; margin-bottom: 8px; }
+
+    a.social {
+      display: block;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TERMINAL INTRO -->
+<div id="terminal"></div>
+
+<!-- DRAWERS -->
+<div class="drawer left" id="musicDrawer">
+  <h3>🎧 Café Music</h3>
+  <audio controls src="song1.mp3"></audio>
+  <audio controls src="song2.mp3"></audio>
+  <audio controls src="song3.mp3"></audio>
+  <audio controls src="song4.mp3"></audio>
+  <audio controls src="song5.mp3"></audio>
+  <audio controls src="song6.mp3"></audio>
+  <audio controls src="song7.mp3"></audio>
+</div>
+
+<div class="drawer right" id="socialDrawer">
+  <h3>☕ Social</h3>
+  <a class="social" href="https://twitter.com" target="_blank">Twitter</a>
+  <a class="social" href="https://instagram.com" target="_blank">Instagram</a>
+  <a class="social" href="https://github.com" target="_blank">GitHub</a>
+  <a class="social" href="https://discord.com" target="_blank">Discord</a>
+</div>
+
+<div class="edge left"></div>
+<div class="edge right"></div>
+
+<!-- APP -->
+<div id="app">
+  <div id="greeting"></div>
+
+  <div class="card" id="auth">
+    <h3>Login / Sign Up</h3>
+    <input id="email" placeholder="email" />
+    <input id="password" type="password" placeholder="password" />
+    <button onclick="login()">Enter Café</button>
+  </div>
+
+  <div class="card" id="forum" style="display:none; margin-top:20px;">
+    <h3>Threaded Notes</h3>
+    <textarea id="postText" placeholder="Leave a note..."></textarea>
+    <button onclick="postMessage()">Post</button>
+    <div id="posts"></div>
+  </div>
+</div>
+
+<script>
+  /* Supabase setup */
+  const supabase = supabaseJs.createClient(
+    "YOUR_SUPABASE_URL",
+    "YOUR_ANON_PUBLIC_KEY"
+  );
+
+  /* Terminal typing */
+  const terminal = document.getElementById("terminal");
+  const lines = [
+    "> booting chimera-cafe",
+    "> syncing memories",
+    "> access granted ☕"
+  ];
+
+  let li = 0, ci = 0;
+  const typeSound = new Audio("type.wav");
+  const chime = new Audio("access.wav");
+
+  function typeLoop() {
+    if (li < lines.length) {
+      if (ci < lines[li].length) {
+        terminal.textContent += lines[li][ci++];
+        typeSound.currentTime = 0; typeSound.play();
+        setTimeout(typeLoop, 40);
+      } else {
+        terminal.textContent += "\n";
+        li++; ci = 0;
+        setTimeout(typeLoop, 400);
+      }
+    } else {
+      chime.play();
+      setTimeout(() => {
+        terminal.style.display = "none";
+        document.getElementById("app").style.display = "block";
+      }, 500);
+    }
+  }
+  typeLoop();
+
+  /* Drawers */
+  const music = document.getElementById("musicDrawer");
+  const social = document.getElementById("socialDrawer");
+
+  document.querySelector('.edge.left').onclick = () => music.classList.toggle('open');
+  document.querySelector('.edge.right').onclick = () => social.classList.toggle('open');
+
+  /* Auth */
+  async function login() {
+    const email = email.value;
+    const password = password.value;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      await supabase.auth.signUp({ email, password });
+    }
+  }
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session) {
+      document.getElementById('auth').style.display = 'none';
+      document.getElementById('forum').style.display = 'block';
+      document.getElementById('greeting').textContent = `Welcome back, ${session.user.email}`;
+    }
+  });
+
+  /* Forum demo (local) */
+  function postMessage() {
+    const text = postText.value.trim();
+    if (!text) return;
+    const div = document.createElement('div');
+    div.className = 'post';
+    div.textContent = text;
+    posts.prepend(div);
+    postText.value = '';
+  }
+</script>
+</body>
+</html>
