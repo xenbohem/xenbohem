@@ -66,24 +66,60 @@ body{
 
 #music-btn{left:20px;}
 #tea-btn{right:20px;}
-<body class="locked">
+#music-player {
+  font-family: Inter, system-ui;
+  font-size: 14px;
+}
 
-<audio id="access-chime" src="sounds/access-granted.mp3" preload="auto"></audio>
+#track-title {
+  margin-bottom: 10px;
+  color: var(--cornflower);
+  font-weight: 600;
+}
 
-<div id="terminal-greeting" class="terminal hidden">
-  ACCESS GRANTED — Welcome to Valxentine Café ☕
-</div>
+.music-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
 
-<!-- Drawers -->
-<div id="left-drawer" class="drawer locked-drawer">Music</div>
-<div id="right-drawer" class="drawer locked-drawer">Social</div>
+.music-controls button {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: var(--cornflower);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-<!-- Center content -->
-<div id="center-panel" class="locked-panel">
-  <!-- threaded comments live here -->
-</div>
+.music-controls button:hover {
+  background: rgba(255,255,255,0.2);
+}
 
-</body>
+#track-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#track-list li {
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+#track-list li:hover {
+  background: rgba(255,255,255,0.1);
+  opacity: 1;
+}
+
+#track-list li.active {
+  color: #fff;
+  background: rgba(111,168,255,0.25);
+  font-weight: 600;
+}
+
 /* DRAWERS */
 #music-drawer{
   position:absolute;
