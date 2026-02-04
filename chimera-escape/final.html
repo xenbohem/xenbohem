@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chimera Quest Café</title>
+
+<style>
+:root{
+  --cornflower:#6fa8ff;
+  --terminal-glow:#6495ED;
+  --cafe-grey:#d8d8dc;
+  --coffee:#4b3325;
+  --deep-indigo:#1a1633;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  height:100vh;
+  background:
+    radial-gradient(circle at center, transparent 60%, rgba(75,51,37,0.6) 100%),
+    linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Inter,system-ui;
+  overflow:hidden;
+}
+
+/* FRAME */
+#cafe-frame{
+  width:92vw;
+  height:90vh;
+  background:rgba(10,10,20,0.78);
+  border-radius:22px;
+  box-shadow:0 0 80px rgba(0,0,0,.7);
+  backdrop-filter:blur(12px);
+  position:relative;
+  overflow:hidden;
+}
+
+/* HEADER */
+#header{
+  height:70px;
+  background:linear-gradient(180deg,rgba(40,35,70,.9),rgba(10,10,20,.7));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Cinzel,serif;
+  letter-spacing:3px;
+  font-size:28px;
+  color:#e9dcff;
+  text-shadow:0 0 12px rgba(160,120,255,.8);
+  position:relative;
+}
+
+.drawer-btn{
+  position:absolute;
+  top:18px;
+  font-size:24px;
+  cursor:pointer;
+  opacity:.75;
+}
+.drawer-btn:hover{opacity:1;}
+
+#music-btn{left:20px;}
+#tea-btn{right:20px;}
+#music-player {
+  font-family: Inter, system-ui;
+  font-size: 14px;
+}
+
+#track-title {
+  margin-bottom: 10px;
+  color: var(--cornflower);
+  font-weight: 600;
+}
+
+.music-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.music-controls button {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: var(--cornflower);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.music-controls button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+#track-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#track-list li {
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+#track-list li:hover {
+  background: rgba(255,255,255,0.1);
+  opacity: 1;
+}
+
+#track-list li.active {
+  color: #fff;
+  background: rgba(111,168,255,0.25);
+  font-weight: 600;
+}
+
+/* DRAWERS */
+#music-drawer{
+  position:absolute;
+  left:-320px;
+  top:70px;
+  width:320px;
+  height:calc(100% - 70px);
+  background:linear-gradient(180deg,#1b1533,#0b0818);
+  padding:20px;
+  transition:.6s cubic-bezier(.7,.1,.3,1);
+  color:#e6ddff;
+  box-shadow:20px 0 50px rgba(0,0,0,.6);
+  z-index:5;
+}
+
+#tea-drawer{
+  position:absolute;
+  right:-320px;
+  top:70px;
+  width:320px;
+  height:calc(100% - 70px);
+  background:linear-gradient(180deg,#3a2a1f,#1d1510);
+  padding:20px;
+  transition:.6s cubic-bezier(.7,.1,.3,1);
+  color:#f4e7d3;
+  box-shadow:-20px 0 50px rgba(0,0,0,.6);
+  z-index:5;
+}
+
+.drawer-title{
+  font-family:Cinzel,serif;
+  letter-spacing:2px;
+  margin-bottom:10px;
+}
+
+/* FORUM */
+#forum-stage{
+  position:absolute;
+  top:90px;
+  left:50%;
+  transform:translateX(-50%);
+  width:60%;
+  height:75%;
+  background:rgba(25,20,45,.92);
+  border-radius:20px;
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,.6),
+    0 0 40px rgba(120,90,200,.3);
+  padding:25px;
+  color:#eee;
+  overflow:auto;
+}
+
+#post-input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:rgba(255,255,255,.1);
+  color:#eee;
+}
+
+#post-btn{
+  margin-top:8px;
+  padding:8px 16px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.post{
+  background:rgba(255,255,255,.05);
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
+  border-left:4px solid var(--cornflower);
+}
+
+.post-author{
+  font-weight:bold;
+  color:#e9dcff;
+}
+
+/* TERMINAL GATE */
+#name-gate{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+  font-family:'Courier New', monospace;
+  color:var(--terminal-glow);
+}
+
+.terminal{
+  width:80%;
+  max-width:800px;
+  height:70%;
+  border:2px solid var(--terminal-glow);
+  padding:20px;
+  overflow:auto;
+  box-shadow:
+    0 0 10px rgba(100,149,237,.7),
+    inset 0 0 12px rgba(100,149,237,.2);
+}
+
+input{
+  background:none;
+  border:none;
+  color:var(--terminal-glow);
+  outline:none;
+  width:100%;
+}
+  /* DEFAULT: LOCKED */
+body.locked {
+  --ui-opacity: 0.35;
+}
+
+.locked-drawer,
+.locked-panel {
+  opacity: var(--ui-opacity);
+  pointer-events: none;
+  filter: blur(1px);
+  transition: all 0.4s ease;
+}
+
+/* UNLOCKED */
+body.logged-in {
+  --ui-opacity: 1;
+}
+
+body.logged-in .locked-drawer,
+body.logged-in .locked-panel {
+  opacity: 1;
+  pointer-events: auto;
+  filter: none;
+}
+
+/* Terminal greeting */
+.terminal {
+  font-family: "JetBrains Mono", monospace;
+  color: #6495ED;
+  text-shadow: 0 0 6px rgba(100,149,237,0.7);
+  margin: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="cafe-frame">
+  <div id="header">
+    <span id="music-btn" class="drawer-btn">🎶</span>
+    CHIMERA QUEST CAFÉ
+    <span id="tea-btn" class="drawer-btn">☕</span>
+  </div>
+
+  <div class="drawer-title">🎶 Café Soundtrack</div>
+
+<div id="music-player">
+  <div id="track-title">—</div>
+
+  <audio id="audio-player" preload="metadata"></audio>
+
+  <div class="music-controls">
+    <button id="prev-btn">⏮</button>
+    <button id="play-btn">▶</button>
+    <button id="next-btn">⏭</button>
+  </div>
+
+  <ul id="track-list">
+    <!-- populated by JS -->
+  </ul>
+</div>
+
+
+  <div id="tea-drawer">
+    <div class="drawer-title">☕ Star’s Tea Shelf</div>
+    Lore, rituals, and brews…
+  </div>
+
+  <div id="forum-stage">
+    <h2 id="welcome"></h2>
+    <input id="post-input" placeholder="Speak at the Indigo Table…" />
+    <button id="post-btn">Post</button>
+    <div id="posts"></div>
+  </div>
+</div>
+
+<div id="name-gate">
+  <div class="terminal">
+    <div id="output"></div>
+    <input id="user-input" placeholder="Enter your name…" />
+  </div>
+</div>
+
+<audio id="type-sound" src="https://cdn.jsdelivr.net/gh/terkelg/keyboard-sounds/keyboard1.mp3"></audio>
+<audio id="access-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_7c9c9f9a33.mp3"></audio>
+
+<script>
+const musicBtn = document.getElementById("music-btn");
+const teaBtn = document.getElementById("tea-btn");
+const musicDrawer = document.getElementById("music-drawer");
+const teaDrawer = document.getElementById("tea-drawer");
+
+let musicOpen=false, teaOpen=false;
+
+musicBtn.onclick=()=>musicDrawer.style.left=(musicOpen=!musicOpen)?'0':'-320px';
+teaBtn.onclick=()=>teaDrawer.style.right=(teaOpen=!teaOpen)?'0':'-320px';
+
+const output=document.getElementById('output');
+const userInput=document.getElementById('user-input');
+const gate=document.getElementById('name-gate');
+const accessSound=document.getElementById('access-sound');
+
+let user='';
+
+output.innerHTML="Initializing Chimera Quest Café…<br>Welcome, traveler.<br>";
+
+userInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && userInput.value){
+    user=userInput.value;
+    accessSound.play();
+    setTimeout(()=>{
+      gate.style.display='none';
+      document.getElementById('welcome').textContent=`Welcome, ${user} of the Indigo Table ☕`;
+      loadPosts();
+    },600);
+  }
+});
+
+const postBtn=document.getElementById('post-btn');
+postBtn.onclick=addPost;
+
+function addPost(){
+  const input=document.getElementById('post-input');
+  if(!input.value) return;
+  const posts=JSON.parse(localStorage.getItem('cafePosts'))||[];
+  posts.push({author:user,content:input.value,time:new Date().toLocaleString()});
+  localStorage.setItem('cafePosts',JSON.stringify(posts));
+  input.value='';
+  loadPosts();
+}
+
+function loadPosts(){
+  const box=document.getElementById('posts');
+  box.innerHTML='';
+  const posts=JSON.parse(localStorage.getItem('cafePosts'))||[];
+  posts.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='post';
+    div.innerHTML=`<div class="post-author">${p.author} — ${p.time}</div>${p.content}`;
+    box.appendChild(div);
+  });
+}
+
+const chime = document.getElementById("access-chime");
+const terminal = document.getElementById("terminal-greeting");
+
+let hasUnlockedThisSession = false;
+
+async function applyAuthState(session) {
+  if (session?.user?.email_confirmed_at) {
+    document.body.classList.remove("locked");
+    document.body.classList.add("logged-in");
+
+    if (!hasUnlockedThisSession) {
+      hasUnlockedThisSession = true;
+
+      // Play chime (user has already interacted by logging in)
+      chime?.play().catch(() => {});
+
+      // Show terminal greeting
+      terminal.classList.remove("hidden");
+      terminal.textContent = "ACCESS GRANTED — Welcome to Valxentine Café ☕";
+    }
+  } else {
+    document.body.classList.add("locked");
+    document.body.classList.remove("logged-in");
+  }
+}
+
+// On page load
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  applyAuthState(session);
+})();
+
+// React to auth changes
+supabase.auth.onAuthStateChange((event, session) => {
+  applyAuthState(session);
+
+  if (event === "SIGNED_OUT") {
+    hasUnlockedThisSession = false;
+    terminal.classList.add("hidden");
+  }
+});
+  // -----------------------------
+// MUSIC PLAYER
+// -----------------------------
+
+const tracks = [
+  { title: "Midnight Espresso", src: "music/track1.mp3" },
+  { title: "Lavender Static", src: "music/track2.mp3" },
+  { title: "Neon Teacups", src: "music/track3.mp3" },
+  { title: "After-Hours Indigo", src: "music/track4.mp3" },
+  { title: "Rain on Glass", src: "music/track5.mp3" },
+  { title: "Terminal Waltz", src: "music/track6.mp3" },
+  { title: "Last Call at Valxentine", src: "music/track7.mp3" }
+];
+
+const audio = document.getElementById("audio-player");
+const playBtn = document.getElementById("play-btn");
+const nextBtn = document.getElementById("next-btn");
+const prevBtn = document.getElementById("prev-btn");
+const trackTitle = document.getElementById("track-title");
+const trackList = document.getElementById("track-list");
+
+let currentTrack = 0;
+let isPlaying = false;
+
+// Build track list
+tracks.forEach((track, index) => {
+  const li = document.createElement("li");
+  li.textContent = track.title;
+  li.onclick = () => loadTrack(index, true);
+  trackList.appendChild(li);
+});
+
+function loadTrack(index, play = false) {
+  currentTrack = index;
+  audio.src = tracks[index].src;
+  trackTitle.textContent = tracks[index].title;
+
+  [...trackList.children].forEach((li, i) => {
+    li.classList.toggle("active", i === index);
+  });
+
+  if (play) {
+    audio.play();
+    isPlaying = true;
+    playBtn.textContent = "⏸";
+  }
+}
+
+playBtn.onclick = () => {
+  if (!audio.src) loadTrack(currentTrack);
+
+  if (isPlaying) {
+    audio.pause();
+    playBtn.textContent = "▶";
+  } else {
+    audio.play();
+    playBtn.textContent = "⏸";
+  }
+  isPlaying = !isPlaying;
+};
+
+nextBtn.onclick = () => {
+  loadTrack((currentTrack + 1) % tracks.length, true);
+};
+
+prevBtn.onclick = () => {
+  loadTrack((currentTrack - 1 + tracks.length) % tracks.length, true);
+};
+
+audio.onended = () => {
+  loadTrack((currentTrack + 1) % tracks.length, true);
+};
+
+// Load first track (but DO NOT autoplay)
+loadTrack(0, false);
+
+</script>
+</body>
+</html>
