@@ -2,284 +2,274 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chimera Quest Café</title>
+<title>Valxentine Café</title>
+<!-- Appwrite SDK -->
+<script src="https://cdn.jsdelivr.net/npm/appwrite@9.9.0/dist/appwrite.min.js"></script>
 
 <style>
 :root{
-  --cornflower:#6fa8ff;
-  --terminal-glow:#6495ED;
-  --cafe-grey:#d8d8dc;
-  --coffee:#4b3325;
-  --deep-indigo:#1a1633;
+  --blush:#FFC1CC;
+  --rose:#FF6B81;
+  --punch:#FF3B5C;
+  --soft-bg:#FFF0F5;
+  --text-dark:#4B2E3E;
+  --accent:#FF69B4;
+  --heart-color:#FFB6C1;
 }
 
 *{box-sizing:border-box;}
 
 body{
   margin:0;
-  height:100vh;
-  background:
-    radial-gradient(circle at center, transparent 60%, rgba(75,51,37,0.6) 100%),
-    linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
+  font-family:'Sawarabi Mincho', cursive;
+  background:linear-gradient(135deg,var(--soft-bg),#ffe6f0);
   display:flex;
   justify-content:center;
-  align-items:center;
-  font-family:Inter,system-ui;
-  overflow:hidden;
+  align-items:flex-start;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
-/* FRAME */
 #cafe-frame{
-  width:92vw;
-  height:90vh;
-  background:rgba(10,10,20,0.78);
-  border-radius:22px;
-  box-shadow:0 0 80px rgba(0,0,0,.7);
-  backdrop-filter:blur(12px);
+  width:90vw;
+  max-width:900px;
+  min-height:90vh;
+  background:rgba(255,255,255,0.9);
+  border-radius:20px;
+  box-shadow:0 0 60px rgba(0,0,0,0.25);
+  padding:20px;
+  overflow-y:auto;
   position:relative;
+}
+
+#header{
+  font-size:2rem;
+  text-align:center;
+  margin-bottom:20px;
+  color:var(--rose);
+  text-shadow:0 0 6px var(--punch);
+}
+
+/* Welcome Note */
+#welcome-note{
+  background:var(--blush);
+  padding:12px 16px;
+  border-radius:12px;
+  margin-bottom:16px;
+  cursor:pointer;
+  transition:0.3s all;
+  max-height:500px;
   overflow:hidden;
 }
+#welcome-note.collapsed{
+  max-height:3em;
+}
 
-/* HEADER */
-#header{
-  height:70px;
-  background:linear-gradient(180deg,rgba(40,35,70,.9),rgba(10,10,20,.7));
+/* Daily Prompt */
+#daily-prompt{
+  background:var(--rose);
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:16px;
+  font-size:1.1rem;
+}
+
+/* Posts Board */
+#posts{
   display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:Cinzel,serif;
-  letter-spacing:3px;
-  font-size:28px;
-  color:#e9dcff;
-  text-shadow:0 0 12px rgba(160,120,255,.8);
-  position:relative;
+  flex-direction:column-reverse;
+  gap:12px;
 }
 
-.drawer-btn{
-  position:absolute;
-  top:18px;
-  font-size:24px;
-  cursor:pointer;
-  opacity:.75;
-}
-.drawer-btn:hover{opacity:1;}
-
-#music-btn{left:20px;}
-#tea-btn{right:20px;}
-
-/* DRAWERS */
-#music-drawer{
-  position:absolute;
-  left:-320px;
-  top:70px;
-  width:320px;
-  height:calc(100% - 70px);
-  background:linear-gradient(180deg,#1b1533,#0b0818);
-  padding:20px;
-  transition:.6s cubic-bezier(.7,.1,.3,1);
-  color:#e6ddff;
-  box-shadow:20px 0 50px rgba(0,0,0,.6);
-  z-index:5;
+.post{
+  background:rgba(255,255,255,0.6);
+  padding:10px 14px;
+  border-radius:10px;
+  border-left:4px solid var(--punch);
 }
 
-#tea-drawer{
-  position:absolute;
-  right:-320px;
-  top:70px;
-  width:320px;
-  height:calc(100% - 70px);
-  background:linear-gradient(180deg,#3a2a1f,#1d1510);
-  padding:20px;
-  transition:.6s cubic-bezier(.7,.1,.3,1);
-  color:#f4e7d3;
-  box-shadow:-20px 0 50px rgba(0,0,0,.6);
-  z-index:5;
+.post-author{
+  font-weight:bold;
+  color:var(--accent);
+  margin-bottom:4px;
 }
 
-.drawer-title{
-  font-family:Cinzel,serif;
-  letter-spacing:2px;
-  margin-bottom:10px;
-}
-
-/* FORUM */
-#forum-stage{
-  position:absolute;
-  top:90px;
-  left:50%;
-  transform:translateX(-50%);
-  width:60%;
-  height:75%;
-  background:rgba(25,20,45,.92);
-  border-radius:20px;
-  box-shadow:
-    inset 0 0 40px rgba(0,0,0,.6),
-    0 0 40px rgba(120,90,200,.3);
-  padding:25px;
-  color:#eee;
-  overflow:auto;
-}
-
+/* Input */
 #post-input{
   width:100%;
   padding:10px;
   border-radius:10px;
   border:none;
-  background:rgba(255,255,255,.1);
-  color:#eee;
+  margin-top:8px;
 }
 
 #post-btn{
-  margin-top:8px;
-  padding:8px 16px;
+  padding:8px 14px;
+  background:var(--punch);
+  color:white;
   border:none;
-  border-radius:8px;
-  background:linear-gradient(135deg,var(--cornflower),var(--cafe-grey));
-  font-weight:bold;
+  border-radius:10px;
+  margin-top:8px;
   cursor:pointer;
 }
 
-.post{
-  background:rgba(255,255,255,.05);
-  padding:12px;
-  border-radius:10px;
-  margin-top:10px;
-  border-left:4px solid var(--cornflower);
-}
-
-.post-author{
-  font-weight:bold;
-  color:#e9dcff;
-}
-
-/* TERMINAL GATE */
-#name-gate{
+/* Music Cup */
+#music-cup{
   position:fixed;
-  inset:0;
-  background:#000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:20;
-  font-family:'Courier New', monospace;
-  color:var(--terminal-glow);
+  bottom:20px;
+  right:20px;
+  font-size:2rem;
+  cursor:pointer;
+}
+#music-player{
+  position:fixed;
+  bottom:70px;
+  right:20px;
+  background:rgba(255,192,203,0.9);
+  padding:12px;
+  border-radius:12px;
+  display:none;
 }
 
-.terminal{
-  width:80%;
-  max-width:800px;
-  height:70%;
-  border:2px solid var(--terminal-glow);
-  padding:20px;
-  overflow:auto;
-  box-shadow:
-    0 0 10px rgba(100,149,237,.7),
-    inset 0 0 12px rgba(100,149,237,.2);
+/* Floating hearts */
+.heart{
+  position:absolute;
+  width:12px;
+  height:12px;
+  background:var(--heart-color);
+  transform:rotate(45deg);
+  animation:float 4s linear infinite;
+  opacity:0.8;
 }
-
-input{
-  background:none;
-  border:none;
-  color:var(--terminal-glow);
-  outline:none;
-  width:100%;
+.heart::after,
+.heart::before{
+  content:'';
+  position:absolute;
+  width:12px;
+  height:12px;
+  background:var(--heart-color);
+  border-radius:50%;
+}
+.heart::after{top:-6px; left:0;}
+.heart::before{left:-6px; top:0;}
+@keyframes float{
+  0%{transform:translateY(0) rotate(45deg);}
+  100%{transform:translateY(-200px) rotate(45deg);}
 }
 </style>
-</head>
 
+<link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+
+</head>
 <body>
 
 <div id="cafe-frame">
-  <div id="header">
-    <span id="music-btn" class="drawer-btn">🎶</span>
-    CHIMERA QUEST CAFÉ
-    <span id="tea-btn" class="drawer-btn">☕</span>
+  <div id="header">☕ Welcome to Valxentine Café ☕</div>
+
+  <div id="welcome-note" class="collapsed">
+    Hello sweet visitor! 💗<br>
+    Here at Valxentine Café we explore **love, gratitude, and daily joy**.<br>
+    Your heart and spirit are welcome here. Tap to expand/collapse this note.
   </div>
 
-  <div id="music-drawer">
-    <div class="drawer-title">🎶 Café Soundtrack</div>
-    Ambient playlists coming soon…
-  </div>
+  <div id="daily-prompt">💌 Today's Love Prompt: Take a moment to appreciate something beautiful in your day.</div>
 
-  <div id="tea-drawer">
-    <div class="drawer-title">☕ Star’s Tea Shelf</div>
-    Lore, rituals, and brews…
-  </div>
+  <div id="posts"></div>
 
-  <div id="forum-stage">
-    <h2 id="welcome"></h2>
-    <input id="post-input" placeholder="Speak at the Indigo Table…" />
-    <button id="post-btn">Post</button>
-    <div id="posts"></div>
-  </div>
+  <input id="post-input" placeholder="Share your love note…" />
+  <button id="post-btn">Post</button>
 </div>
 
-<div id="name-gate">
-  <div class="terminal">
-    <div id="output"></div>
-    <input id="user-input" placeholder="Enter your name…" />
-  </div>
+<div id="music-cup">☕</div>
+<div id="music-player">
+  <audio id="audio-player" controls src="music/track1.mp3"></audio>
 </div>
-
-<audio id="type-sound" src="https://cdn.jsdelivr.net/gh/terkelg/keyboard-sounds/keyboard1.mp3"></audio>
-<audio id="access-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_7c9c9f9a33.mp3"></audio>
 
 <script>
-const musicBtn = document.getElementById("music-btn");
-const teaBtn = document.getElementById("tea-btn");
-const musicDrawer = document.getElementById("music-drawer");
-const teaDrawer = document.getElementById("tea-drawer");
+// -----------------------------
+// Floating hearts
+// -----------------------------
+function createHeart(){
+  const heart = document.createElement('div');
+  heart.className='heart';
+  heart.style.left=Math.random()*window.innerWidth+'px';
+  heart.style.animationDuration=2+Math.random()*3+'s';
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),4000);
+}
+setInterval(createHeart,300);
 
-let musicOpen=false, teaOpen=false;
+// -----------------------------
+// Welcome note collapsible
+// -----------------------------
+const welcomeNote = document.getElementById('welcome-note');
+const firstVisit = localStorage.getItem('firstVisit');
+if(!firstVisit){
+  welcomeNote.classList.remove('collapsed');
+  localStorage.setItem('firstVisit','seen');
+}
+welcomeNote.onclick = ()=>welcomeNote.classList.toggle('collapsed');
 
-musicBtn.onclick=()=>musicDrawer.style.left=(musicOpen=!musicOpen)?'0':'-320px';
-teaBtn.onclick=()=>teaDrawer.style.right=(teaOpen=!teaOpen)?'0':'-320px';
+// -----------------------------
+// Music cup toggle
+// -----------------------------
+const cup = document.getElementById('music-cup');
+const player = document.getElementById('music-player');
+cup.onclick = ()=>player.style.display=(player.style.display==='none'?'block':'none');
 
-const output=document.getElementById('output');
-const userInput=document.getElementById('user-input');
-const gate=document.getElementById('name-gate');
-const accessSound=document.getElementById('access-sound');
+// -----------------------------
+// Appwrite setup
+// -----------------------------
+const client = new Appwrite.Client();
+client
+    .setEndpoint('https://[YOUR_APPWRITE_ENDPOINT]') // replace
+    .setProject('[YOUR_PROJECT_ID]'); // replace
 
-let user='';
+const database = new Appwrite.Database(client);
+const collectionId = 'jotnotes'; // your collection
 
-output.innerHTML="Initializing Chimera Quest Café…<br>Welcome, traveler.<br>";
+// Elements
+const postsContainer = document.getElementById('posts');
+const postBtn = document.getElementById('post-btn');
+const postInput = document.getElementById('post-input');
+const userInput = { value: 'Anonymous' }; // you can later bind to a real login
 
-userInput.addEventListener('keydown',e=>{
-  if(e.key==='Enter' && userInput.value){
-    user=userInput.value;
-    accessSound.play();
-    setTimeout(()=>{
-      gate.style.display='none';
-      document.getElementById('welcome').textContent=`Welcome, ${user} of the Indigo Table ☕`;
-      loadPosts();
-    },600);
-  }
-});
-
-const postBtn=document.getElementById('post-btn');
-postBtn.onclick=addPost;
-
-function addPost(){
-  const input=document.getElementById('post-input');
-  if(!input.value) return;
-  const posts=JSON.parse(localStorage.getItem('cafePosts'))||[];
-  posts.push({author:user,content:input.value,time:new Date().toLocaleString()});
-  localStorage.setItem('cafePosts',JSON.stringify(posts));
-  input.value='';
-  loadPosts();
+// -----------------------------
+// Load all notes
+// -----------------------------
+async function loadPosts(){
+  postsContainer.innerHTML='';
+  try{
+    const res = await database.listDocuments(collectionId);
+    const docs = res.documents.sort((a,b)=>new Date(a.$createdAt)-new Date(b.$createdAt));
+    docs.forEach(doc=>{
+      const div = document.createElement('div');
+      div.className='post';
+      div.innerHTML = `<div class="post-author">${doc.author || 'Anonymous'} — ${new Date(doc.$createdAt).toLocaleString()}</div>${doc.content}`;
+      postsContainer.appendChild(div);
+    });
+  }catch(err){console.error(err);}
 }
 
-function loadPosts(){
-  const box=document.getElementById('posts');
-  box.innerHTML='';
-  const posts=JSON.parse(localStorage.getItem('cafePosts'))||[];
-  posts.forEach(p=>{
-    const div=document.createElement('div');
-    div.className='post';
-    div.innerHTML=`<div class="post-author">${p.author} — ${p.time}</div>${p.content}`;
-    box.appendChild(div);
-  });
+// -----------------------------
+// Add new note
+// -----------------------------
+postBtn.onclick=async ()=>{
+  const content = postInput.value.trim();
+  if(!content) return;
+  try{
+    await database.createDocument(collectionId,{
+      author:userInput.value,
+      content:content
+    });
+    postInput.value='';
+    loadPosts();
+  }catch(err){console.error(err);}
 }
+
+// Initial load
+loadPosts();
 </script>
 
 </body>
