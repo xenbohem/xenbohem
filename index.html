@@ -223,8 +223,8 @@ cup.onclick = ()=>player.style.display=(player.style.display==='none'?'block':'n
 // -----------------------------
 const client = new Appwrite.Client();
 client
-    .setEndpoint('https://sfo.cloud.appwrite.io/v1') // replace
-    .setProject('698453930017e185ce48'); // replace
+    .setEndpoint('https://sfo.cloud.appwrite.io/v1')  
+    .setProject('698453930017e185ce48');  
 
 const database = new Appwrite.Database(client);
 const collectionId = 'jotnotes'; // your collection
@@ -233,7 +233,7 @@ const collectionId = 'jotnotes'; // your collection
 const postsContainer = document.getElementById('posts');
 const postBtn = document.getElementById('post-btn');
 const postInput = document.getElementById('post-input');
-const userInput = { value: 'Anonymous' }; // you can later bind to a real login
+const userInput = { value: 'Anonymous' }; // simple placeholder for now
 
 // -----------------------------
 // Load all notes
@@ -249,24 +249,34 @@ async function loadPosts(){
       div.innerHTML = `<div class="post-author">${doc.author || 'Anonymous'} — ${new Date(doc.$createdAt).toLocaleString()}</div>${doc.content}`;
       postsContainer.appendChild(div);
     });
-  }catch(err){console.error(err);}
+  }catch(err){
+    console.error('Error fetching notes:', err);
+  }
 }
 
 // -----------------------------
-// Add new note
+// Add new note with debug logging
 // -----------------------------
-postBtn.onclick=async ()=>{
+postBtn.onclick = async () => {
   const content = postInput.value.trim();
-  if(!content) return;
-  try{
-    await database.createDocument(collectionId,{
-      author:userInput.value,
-      content:content
+  if (!content) return;
+
+  try {
+    const doc = await database.createDocument(collectionId, {
+      author: userInput.value,
+      content: content
     });
-    postInput.value='';
+
+    // Debug log: confirm note reached Appwrite
+    console.log('Note successfully posted!', doc);
+
+    postInput.value = '';
     loadPosts();
-  }catch(err){console.error(err);}
-}
+
+  } catch (err) {
+    console.error('Error creating note:', err);
+  }
+};
 
 // Initial load
 loadPosts();
