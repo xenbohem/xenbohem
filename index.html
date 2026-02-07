@@ -1,346 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Valxentine Café</title>
-<script src="https://cdn.jsdelivr.net/npm/appwrite@9.9.0/dist/appwrite.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Valentine's Notes Forum</title>
+<script src="https://cdn.jsdelivr.net/npm/appwrite/dist/appwrite.min.js"></script>
 <style>
-:root{
-  --blush:#FFC1CC;
-  --rose:#FF6B81;
-  --punch:#FF3B5C;
-  --soft-bg:#FFF0F5;
-  --text-dark:#4B2E3E;
-  --accent:#FF69B4;
-  --heart-color:#FFB6C1;
-}
-
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:'Sawarabi Mincho', cursive;
-  background:linear-gradient(135deg,var(--soft-bg),#ffe6f0);
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-#cafe-frame{
-  width:90vw;
-  max-width:900px;
-  min-height:90vh;
-  background:rgba(255,255,255,0.9);
-  border-radius:20px;
-  box-shadow:0 0 60px rgba(0,0,0,0.25);
-  padding:20px;
-  overflow-y:auto;
-  position:relative;
-}
-
-#header{
-  font-size:2rem;
-  text-align:center;
-  margin-bottom:20px;
-  color:var(--rose);
-  text-shadow:0 0 6px var(--punch);
-}
-
-#welcome-note{
-  background:var(--blush);
-  padding:12px 16px;
-  border-radius:12px;
-  margin-bottom:16px;
-  cursor:pointer;
-  transition:0.3s all;
-  max-height:500px;
-  overflow:hidden;
-}
-#welcome-note.collapsed{
-  max-height:3em;
-}
-
-#daily-prompt{
-  background:var(--rose);
-  color:white;
-  padding:10px 14px;
-  border-radius:10px;
-  margin-bottom:16px;
-  font-size:1.1rem;
-}
-
-#posts{
-  display:flex;
-  flex-direction:column-reverse;
-  gap:12px;
-}
-
-.post{
-  background:rgba(255,255,255,0.6);
-  padding:10px 14px;
-  border-radius:10px;
-  border-left:4px solid var(--punch);
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-
-.post-author{
-  font-weight:bold;
-  color:var(--accent);
-  margin-bottom:4px;
-}
-
-.post-avatar{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid var(--punch);
-}
-
-.post-buttons{
-  margin-left:auto;
-  display:flex;
-  gap:6px;
-}
-
-#post-input,#avatar-input{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  margin-top:8px;
-}
-
-#post-btn{
-  padding:8px 14px;
-  background:var(--punch);
-  color:white;
-  border:none;
-  border-radius:10px;
-  margin-top:8px;
-  cursor:pointer;
-}
-
-#music-cup{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  font-size:2rem;
-  cursor:pointer;
-}
-#music-player{
-  position:fixed;
-  bottom:70px;
-  right:20px;
-  background:rgba(255,192,203,0.9);
-  padding:12px;
-  border-radius:12px;
-  display:none;
-}
-
-.heart{
-  position:absolute;
-  width:12px;
-  height:12px;
-  background:var(--heart-color);
-  transform:rotate(45deg);
-  animation:float 4s linear infinite;
-  opacity:0.8;
-}
-.heart::after,.heart::before{
-  content:'';
-  position:absolute;
-  width:12px;
-  height:12px;
-  background:var(--heart-color);
-  border-radius:50%;
-}
-.heart::after{top:-6px; left:0;}
-.heart::before{left:-6px; top:0;}
-@keyframes float{
-  0%{transform:translateY(0) rotate(45deg);}
-  100%{transform:translateY(-200px) rotate(45deg);}
-}
+  /* Basic styles for the forum */
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #fefbd8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  .container {
+    width: 90%;
+    max-width: 1000px;
+    text-align: center;
+  }
+  .title {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #a83232;
+    text-shadow: 2px 2px #fff;
+  }
+  .loader {
+    position: fixed;
+    top: 0; left: 0;
+    height: 5px; width: 0;
+    background: linear-gradient(to right, #f36, #f90);
+    z-index: 999;
+    transition: width 0.3s;
+  }
+  .auth-section {
+    background: #fff8dc;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+    display: inline-block;
+  }
+  .auth-forms {
+    display: flex;
+    gap: 20px;
+  }
+  .auth-forms input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 200px;
+  }
+  .auth-forms button {
+    background-color: #e75480;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 1em;
+  }
+  .forum-section {
+    background: #fff8dc;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 30px;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+  }
+  .topic {
+    background: #fefbd8;
+    border: 2px dashed #f36;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .topic:hover {
+    background: #ffe4e1;
+  }
+  .responses {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  .response {
+    background: #fff;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  #new-response {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  button.response-btn {
+    background-color: #e75480;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
-
-<div id="cafe-frame">
-  <div id="header">☕ Welcome to Valxentine Café ☕</div>
-
-  <div id="welcome-note" class="collapsed">
-    Hello sweet visitor! 💗<br>
-    Here at Valxentine Café we explore **love, gratitude, and daily joy**.<br>
-    Your heart and spirit are welcome here. Tap to expand/collapse this note.
+<div id="loader" class="loader"></div>
+<div class="container">
+  <h1 class="title">Valentine's Notes</h1>
+  <!-- Authentication Section -->
+  <div id="auth-section" class="auth-section">
+    <div class="auth-forms">
+      <div class="login-form">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="Email" />
+        <input type="password" id="login-password" placeholder="Password" />
+        <button onclick="login()">Log In</button>
+      </div>
+      <div class="register-form">
+        <h2>Register</h2>
+        <input type="text" id="register-name" placeholder="Name" />
+        <input type="email" id="register-email" placeholder="Email" />
+        <input type="password" id="register-password" placeholder="Password" />
+        <button onclick="register()">Register</button>
+      </div>
+    </div>
   </div>
 
-  <div id="daily-prompt">💌 Today's Love Prompt: Take a moment to appreciate something beautiful in your day.</div>
-
-  <div id="posts"></div>
-
-  <input id="avatar-input" type="file" accept="image/*"/>
-  <input id="post-input" placeholder="Share your love note…" />
-  <button id="post-btn">Post</button>
-</div>
-
-<div id="music-cup">☕</div>
-<div id="music-player">
-  <audio id="audio-player" controls src="music/track1.mp3"></audio>
+  <!-- Forum Content -->
+  <div id="forum-section" style="display:none;">
+    <button onclick="logout()">Logout</button>
+    <div id="topics"></div>
+  </div>
 </div>
 
 <script>
-// -----------------------------
-// Floating hearts
-// -----------------------------
-function createHeart(){
-  const heart = document.createElement('div');
-  heart.className='heart';
-  heart.style.left=Math.random()*window.innerWidth+'px';
-  heart.style.animationDuration=2+Math.random()*3+'s';
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),4000);
-}
-setInterval(createHeart,300);
+  // Configure Appwrite SDK
+  const sdk = new Appwrite();
+  sdk.setEndpoint('https://cloud.appwrite.io/v1');
+  sdk.setProject('69846ddd00103d42a50e');
 
-// -----------------------------
-// Welcome note collapsible
-// -----------------------------
-const welcomeNote = document.getElementById('welcome-note');
-const firstVisit = localStorage.getItem('firstVisit');
-if(!firstVisit){
-  welcomeNote.classList.remove('collapsed');
-  localStorage.setItem('firstVisit','seen');
-}
-welcomeNote.onclick = ()=>welcomeNote.classList.toggle('collapsed');
+  let currentUserId = null;
 
-// -----------------------------
-// Music cup toggle
-// -----------------------------
-const cup = document.getElementById('music-cup');
-const player = document.getElementById('music-player');
-cup.onclick = ()=>player.style.display=(player.style.display==='none'?'block':'none');
+  // Your Database ID
+  const DATABASE_ID = '698473cf0038a7d9f276';
 
-// -----------------------------
-// Appwrite setup
-// -----------------------------
-const client = new Appwrite.Client();
-client
-   .setEndpoint('https://sfo.cloud.appwrite.io/v1')  
-  .setProject('698453930017e185ce48'); 
+  // Utility functions for loading indicator
+  function setLoadingProgress(percent) {
+    document.querySelector('.loader').style.width = percent + '%';
+  }
 
-const account = new Appwrite.Account(client);
-const database = new Appwrite.Database(client);
-const storage = new Appwrite.Storage(client);
+  async function fetchWithLoading(fetchFunc) {
+    setLoadingProgress(0);
+    for (let i=0; i<=100; i+=20) {
+      setLoadingProgress(i);
+      await new Promise(r => setTimeout(r, 100));
+    }
+    const result = await fetchFunc();
+    setLoadingProgress(100);
+    setTimeout(() => { setLoadingProgress(0); }, 300);
+    return result;
+  }
 
-const collectionId = '698473cf0038a7d9f276'; // your jotnotes collection
+  // Registration
+  async function register() {
+    const name = document.getElementById('register-name').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    try {
+      await sdk.account.create('unique()', email, password, name);
+      alert('Registration successful! Please log in.');
+    } catch (e) {
+      alert('Error: ' + e.message);
+    }
+  }
 
-let userId = '';
-let avatarUrl = '';
+  // Login
+  async function login() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    try {
+      const session = await sdk.account.createSession(email, password);
+      currentUserId = session.$id;
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('forum-section').style.display = 'block';
+      loadTopics();
+    } catch (e) {
+      alert('Login failed: ' + e.message);
+    }
+  }
 
-// -----------------------------
-// Create anonymous user
-// -----------------------------
-account.createAnonymousSession()
-  .then(res => {
-    console.log('Anonymous session:', res);
-    userId = res.userId;
-  })
-  .catch(err => console.error(err));
+  // Logout
+  async function logout() {
+    await sdk.account.deleteSession('current');
+    currentUserId = null;
+    document.getElementById('auth-section').style.display = 'block';
+    document.getElementById('forum-section').style.display = 'none';
+  }
 
-// -----------------------------
-// Load all posts
-// -----------------------------
-const postsContainer = document.getElementById('posts');
-const postBtn = document.getElementById('post-btn');
-const postInput = document.getElementById('post-input');
-const avatarInput = document.getElementById('avatar-input');
-
-async function loadPosts(){
-  postsContainer.innerHTML='';
-  try{
-    const res = await database.listDocuments(collectionId);
-    const docs = res.documents.sort((a,b)=>new Date(a.$createdAt)-new Date(b.$createdAt));
-    docs.forEach(doc=>{
-      const div = document.createElement('div');
-      div.className='post';
-      div.innerHTML = `
-        <img class="post-avatar" src="${doc.avatar || 'https://via.placeholder.com/36'}">
-        <div>
-          <div class="post-author">${doc.author || 'Anonymous'} — ${new Date(doc.$createdAt).toLocaleString()}</div>
-          <div>${doc.content}</div>
-        </div>
-        <div class="post-buttons">
-          ${doc.$permissions.update.includes(userId) ? '<button class="edit-btn">Edit</button><button class="delete-btn">Delete</button>' : ''}
-        </div>
-      `;
-      // Delete button
-      const deleteBtn = div.querySelector('.delete-btn');
-      if(deleteBtn){
-        deleteBtn.onclick = async () => {
-          await database.deleteDocument(collectionId, doc.$id);
-          loadPosts();
-        };
-      }
-      // Edit button
-      const editBtn = div.querySelector('.edit-btn');
-      if(editBtn){
-        editBtn.onclick = async () => {
-          const newContent = prompt('Edit your note:', doc.content);
-          if(newContent){
-            await database.updateDocument(collectionId, doc.$id, { content: newContent });
-            loadPosts();
-          }
-        };
-      }
-      postsContainer.appendChild(div);
+  // Load topics
+  async function loadTopics() {
+    const response = await fetchWithLoading(async () => {
+      return await sdk.database.listDocuments(DATABASE_ID, 'topics');
     });
-  }catch(err){
-    console.error('Error fetching notes:', err);
+    const container = document.getElementById('topics');
+    container.innerHTML = '';
+    response.documents.forEach(topic => {
+      const div = document.createElement('div');
+      div.className = 'topic';
+      div.innerHTML = `
+        <h3>${topic.title}</h3>
+        <div class="responses" id="responses-${topic.$id}"></div>
+        <input type="text" placeholder="Your response..." id="response-input-${topic.$id}" />
+        <button class="response-btn" onclick="postResponse('${topic.$id}')">Respond</button>
+      `;
+      div.onclick = () => toggleResponses(topic.$id);
+      container.appendChild(div);
+      loadResponses(topic.$id);
+    });
   }
-}
 
-// -----------------------------
-// Upload avatar
-// -----------------------------
-avatarInput.onchange = async () => {
-  const file = avatarInput.files[0];
-  if(!file) return;
-  try{
-    const uploaded = await storage.createFile('avatars', file.name, file);
-    avatarUrl = client.getEndpoint() + '/storage/buckets/avatars/files/' + uploaded.$id + '/view?project=' + client.project;
-    console.log('Avatar uploaded:', avatarUrl);
-  }catch(err){console.error(err);}
-};
-
-// -----------------------------
-// Add new note
-// -----------------------------
-postBtn.onclick = async () => {
-  const content = postInput.value.trim();
-  if(!content) return;
-  try{
-    const doc = await database.createDocument(collectionId, {
-      author: userId,
-      content: content,
-      avatar: avatarUrl
-    }, [`user:${userId}`], [`user:${userId}`]); // update/delete permissions for creator only
-
-    console.log('Note successfully posted!', doc);
-    postInput.value='';
-    loadPosts();
-  }catch(err){
-    console.error('Error creating note:', err);
+  function toggleResponses(topicId) {
+    const responsesDiv = document.getElementById(`responses-${topicId}`);
+    responsesDiv.style.display = responsesDiv.style.display === 'block' ? 'none' : 'block';
   }
-};
 
-// Initial load
-loadPosts();
+  async function loadResponses(topicId) {
+    const response = await sdk.database.listDocuments(DATABASE_ID, 'responses', [
+      sdk.Query.equal('topicId', topicId)
+    ]);
+    const responsesDiv = document.getElementById(`responses-${topicId}`);
+    responsesDiv.innerHTML = '';
+    response.documents.forEach(res => {
+      const div = document.createElement('div');
+      div.className = 'response';
+      div.innerText = res.responseText;
+      responsesDiv.appendChild(div);
+    });
+  }
+
+  async function postResponse(topicId) {
+    const input = document.getElementById(`response-input-${topicId}`);
+    const text = input.value;
+    if (!text) return;
+    await sdk.database.createDocument(DATABASE_ID, 'responses', 'unique()', {
+      topicId,
+      userId: currentUserId,
+      responseText: text,
+      timestamp: new Date().toISOString()
+    });
+    input.value = '';
+    loadResponses(topicId);
+  }
+
+  async function initTopics() {
+    const existing = await sdk.database.listDocuments(DATABASE_ID, 'topics');
+    if (existing.total === 0) {
+      const defaultTopics = [
+        "Tips for a Date on Valentine's",
+        "How to Have a Great Day",
+        "Flowers to Buy",
+        "Tea Parties Ideas",
+        "Best Candy"
+      ];
+      for (const title of defaultTopics) {
+        await sdk.database.createDocument(DATABASE_ID, 'topics', 'unique()', { title });
+      }
+    }
+  }
+
+  window.onload = () => {
+    initTopics();
+  };
 </script>
 </body>
 </html>
-
