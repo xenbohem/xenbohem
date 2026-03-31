@@ -295,8 +295,11 @@
     else {
         let resp = "That is as beautiful as a blooming petal.";
         if(clean.includes("hello")) resp = "Greetings, wanderer.";
-        if(clean.includes("birthday")) resp = "A day of light and celebration.";
-        
+        if(clean.includes("birthday")) resp = "A beautiful milestone. May your day be dipped in chocolate.";
+        if(clean.includes("rose")) resp = "The finest flower in the garden, and the heart of this world.";
+         }
+
+            
         setTimeout(() => {
             out.innerHTML += `<p><b>Rose:</b> ${resp}</p>`;
             out.scrollTop = out.scrollHeight;
