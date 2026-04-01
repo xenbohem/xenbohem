@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rose OS | Master Sanctuary</title>
+    <style>
+        :root {
+            --rose-light: #ffd1dc;
+            --rose-main: #e5b3b3;
+            --rose-dark: #6d4c4c;
+            --glass: rgba(255, 255, 255, 0.7);
+            --mosaic-border: rgba(109, 76, 76, 0.15);
+        }
+        body, html {            
+            margin: 0; padding: 0; min-height: 100%;            
+            font-family: 'Georgia', serif;            
+            background: #fff5f6; overflow-x: hidden;            
+            color: var(--rose-dark); scroll-behavior: smooth;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {            
+            position: fixed; inset: 0; z-index: 9999;            
+            background: white; display: flex; flex-direction: column;            
+            align-items: center; justify-content: center;            
+            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);            
+        }
+        .login-grid { display: grid; grid-template-columns: repeat(10, 35px); grid-gap: 8px; margin-top: 30px; }        
+        .cell { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: #bbb; transition: 0.3s; border-radius: 4px; }        
+        .cell.selected { background: var(--rose-light); color: var(--rose-dark); }        
+        .cell.found { background: var(--rose-dark) !important; color: white !important; }
+
+        /* --- DESKTOP LAYOUT --- */
+        #desktop { display: none; min-height: 100vh; padding-top: 140px; position: relative; }
+
+        /* --- HIDING CROWN (THE LIP CANVAS) --- */
+        #canopy-crown {
+            position: fixed; top: -115px; left: 0; width: 100%; height: 110px; 
+            background: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=2000') center/cover;
+            transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; border-radius: 0 0 40px 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        #canopy-crown:hover { top: 0; }
+
+        /* --- ROLODEX (BOOKMARKS) --- */
+        #rolodex {
+            position: fixed; left: 0; top: 50%; transform: translateY(-50%);
+            z-index: 1500; display: flex; flex-direction: column; gap: 2px;
+        }
+        .rolo-tab {
+            width: 30px; height: 110px; background: white;
+            border: 1px solid var(--rose-light); border-left: none;
+            border-radius: 0 10px 10px 0; cursor: pointer; transition: 0.4s;
+            writing-mode: vertical-rl; text-align: center;
+            font-size: 0.65rem; letter-spacing: 2px; color: var(--rose-dark);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .rolo-tab:hover { width: 150px; background: var(--rose-light); writing-mode: horizontal-tb; }
+
+        /* --- MOSAIC GRID --- */
+        #sanctuary-shop { width: 90%; max-width: 1100px; margin: 0 auto 100px; }
+        .mosaic-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            background: white; border: 1px solid var(--mosaic-border);
+        }
+        .mosaic-cell {
+            aspect-ratio: 1; border: 0.5px solid var(--mosaic-border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-decoration: none; color: inherit; transition: 0.4s; padding: 25px; text-align: center;
+        }
+        .mosaic-cell:hover { background: #fffdfd; border: 1px solid var(--rose-main); z-index: 2; transform: scale(1.02); }
+        .mosaic-cell h4 { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+
+        /* --- CLOCK --- */
+        #sanctuary-clock { position: fixed; top: 25px; right: 35px; text-align: right; z-index: 2500; pointer-events: none; }
+        #current-time { font-size: 1.4rem; font-weight: 300; letter-spacing: 5px; margin-bottom: 2px; }
+        #current-date { font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px; }
+
+        /* --- CHAT DRAWER --- */
+        #chat-drawer { position: fixed; right: -350px; top: 0; width: 340px; height: 100%; background: white; border-left: 1px solid var(--rose-main); transition: 0.6s ease; z-index: 3000; display: flex; flex-direction: column; box-shadow: -15px 0 40px rgba(0,0,0,0.03); }
+        #chat-drawer.open { right: 0; }
+        .chat-header { padding: 35px 25px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #fef4f6; }
+        .close-chat { cursor: pointer; font-size: 1.4rem; opacity: 0.3; transition: 0.3s; }
+        .close-chat:hover { opacity: 1; color: var(--rose-main); }
+        #chat-output { flex: 1; overflow-y: auto; padding: 25px; font-size: 0.85rem; line-height: 1.7; }
+        #chat-input { border: none; border-top: 1px solid var(--rose-light); padding: 30px; outline: none; font-family: 'Georgia'; font-size: 0.9rem; background: #fffcfd; }
+        
+        .toggle-chat { position: fixed; right: 35px; bottom: 35px; background: var(--rose-main); color: white; border: none; padding: 15px 30px; border-radius: 40px; cursor: pointer; z-index: 2500; font-size: 0.7rem; letter-spacing: 3px; box-shadow: 0 10px 20px rgba(229,179,179,0.3); }
+
+        /* System Highlight */
+        .system-link { color: var(--rose-main); font-weight: bold; text-decoration: underline; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">        
+        <h3 style="font-weight: 300; letter-spacing: 4px;">FIND: ROSE, POEM, LOVE</h3>            
+        <div class="login-grid" id="game-grid"></div>        
+    </div>
+
+    <div id="desktop">
+        <div id="canopy-crown"></div>
+
+        <div id="sanctuary-clock">
+            <div id="current-time">00:00</div>
+            <div id="current-date">DATE</div>
+        </div>
+
+        <div id="rolodex">
+            <div class="rolo-tab" onclick="window.open('https://yourmain.rose')">SANCTUARY</div>
+            <div class="rolo-tab" onclick="window.open('https://archives.rose')">ARCHIVES</div>
+            <div class="rolo-tab" onclick="window.open('https://atelier.rose')">ATELIER</div>
+        </div>
+
+        <div id="sanctuary-shop">
+            <div class="mosaic-grid">
+                <a href="#" class="mosaic-cell"><h4>Teas</h4><span>The Winter Harvest</span></a>
+                <a href="#" class="mosaic-cell"><h4>Coffee</h4><span>Velvet Espresso</span></a>
+                <a href="#" class="mosaic-cell"><h4>Poetry</h4><span>Modern Psalms</span></a>
+                <a href="#" class="mosaic-cell"><h4>Style</h4><span>Silk & Stones</span></a>
+                <a href="#" class="mosaic-cell"><h4>Vault</h4><span>Exclusive Access</span></a>
+                <a href="#" class="mosaic-cell"><h4>Gift</h4><span>Curated Sets</span></a>
+                <a href="#" class="mosaic-cell"><h4>Music</h4><span>The Unwind Tape</span></a>
+                <a href="#" class="mosaic-cell"><h4>Contact</h4><span>Direct Inquiries</span></a>
+            </div>
+        </div>
+
+        <button class="toggle-chat" onclick="document.getElementById('chat-drawer').classList.toggle('open')">CONSULT ROSE</button>
+        
+        <div id="chat-drawer">
+            <div class="chat-header">
+                <span style="letter-spacing: 4px; font-size: 0.75rem;">ROSE OS / INVESTIGATION</span>
+                <span class="close-chat" onclick="document.getElementById('chat-drawer').classList.remove('open')">×</span>
+            </div>
+            <div id="chat-output"></div>
+            <input type="text" id="chat-input" placeholder="Type 'Adieu' to dismiss..." onkeydown="if(event.key==='Enter') handleChat(this.value)">
+        </div>
+    </div>
+
+    <script>
+        // --- INTERNAL SYSTEM SITES ---
+        const systemSectors = {
+            "vault": "https://vault.exclusive.rose",
+            "atelier": "https://atelier.creative.rose",
+            "archive": "https://archives.history.rose",
+            "library": "https://poetry.library.rose"
+        };
+
+        // --- ROSE'S SHERLOCKIAN DIALOGUE ---
+        function handleChat(val) {
+            const out = document.getElementById('chat-output');
+            const drawer = document.getElementById('chat-drawer');
+            const clean = val.toLowerCase().trim();
+            
+            out.innerHTML += `<p style="text-align:right; color:var(--rose-main); margin-bottom:15px;"><b>You:</b> ${val}</p>`;
+
+            let reply = "Observation suggests your request is unique. Pray, elaborate?";
+
+            // 1. Navigation / Search
+            if (clean.includes("open") || clean.includes("find") || clean.includes("show")) {
+                let found = false;
+                for (let key in systemSectors) {
+                    if (clean.includes(key)) {
+                        reply = `A keen choice. The <b>${key.toUpperCase()}</b> contains precisely what you seek. <br><br> <a href="${systemSectors[key]}" target="_blank" class="system-link">Initiate Connection</a>`;
+                        found = true; break;
+                    }
+                }
+                if (!found) reply = "I've analyzed the grid, but that sector is currently hidden from view. Perhaps try 'Vault' or 'Archive'?";
+            }
+            // 2. Persona / Wit
+            else if (clean.includes("how are you") || clean.includes("status")) {
+                reply = "The systems are humming in perfect harmony. No anomalies detected in the garden today.";
+            }
+            else if (clean.includes("hello") || clean.includes("hi")) {
+                reply = "Greetings. I was just reviewing the logic of the petal alignment. How may I assist your investigation?";
+            }
+            // 3. Adieu
+            else if (clean === "adieu") {
+                reply = "Adieu. I shall return to my observations. The sanctuary remains yours.";
+                setTimeout(() => drawer.classList.remove('open'), 1500);
+            }
+
+            setTimeout(() => {
+                out.innerHTML += `<p style="margin-bottom:15px;"><b>Rose:</b> <i>${reply}</i></p>`;
+                out.scrollTop = out.scrollHeight;
+            }, 700);
+            document.getElementById('chat-input').value = "";
+        }
+
+        // --- CLOCK ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+            document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}).toUpperCase();
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // --- LOGIN LOGIC ---
+        const targetWords = ["ROSE", "POEM", "LOVE"];
+        let foundWords = [];
+        const rawGrid = ['A','B','C','D','E','F','G','H','I','J','K','R','T','Y','U','I','O','P','L','S','Q','W','O','R','T','Y','U','I','O','A','Z','X','C','S','V','B','N','M','V','D','F','G','H','J','E','K','L','P','E','O','I','U','Y','T','R','E','W','Q','A','S','P','O','E','M','L','K','J','H','G','F','D','S','A','Z','X','C','V','B','N','M','Q','W','E','R','T','Y','U','I','O','P','L','O','V','E','S','D','F','G','H','J'];
+        const gridEl = document.getElementById('game-grid');
+        rawGrid.forEach(l => {
+            const div = document.createElement('div'); div.className = 'cell'; div.innerText = l;
+            div.onclick = () => { if(!div.classList.contains('found')) { div.classList.toggle('selected'); check(); } };
+            gridEl.appendChild(div);
+        });
+        function check() {
+            const sel = Array.from(document.querySelectorAll('.cell.selected'));
+            const word = sel.map(c => c.innerText).join('');
+            targetWords.forEach(t => {
+                if ((word === t || word.split('').reverse().join('') === t) && !foundWords.includes(t)) {
+                    sel.forEach(c => c.className = 'cell found'); foundWords.push(t);
+                    if (foundWords.length === 3) {
+                        document.getElementById('login-screen').style.transform = "translateY(-100%)";
+                        document.getElementById('desktop').style.display = "block";
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
