@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rose OS | The Enchanted Sanctuary</title>
+    <style>
+        :root {
+            --rose-light: #ffd1dc;
+            --rose-main: #e5b3b3;
+            --rose-dark: #6d4c4c;
+            --glass: rgba(255, 255, 255, 0.85);
+            --mosaic-border: rgba(109, 76, 76, 0.08);
+        }
+        body, html {            
+            margin: 0; padding: 0; min-height: 100%;            
+            font-family: 'Georgia', serif;            
+            background: #fffafa; overflow-x: hidden;            
+            color: var(--rose-dark); scroll-behavior: smooth;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {            
+            position: fixed; inset: 0; z-index: 9999;            
+            background: white; display: flex; flex-direction: column;            
+            align-items: center; justify-content: center;            
+            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);            
+        }
+        .login-grid { display: grid; grid-template-columns: repeat(10, 35px); grid-gap: 8px; margin-top: 30px; }        
+        .cell { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; color: #ddd; transition: 0.4s; border-radius: 50%; }        
+        .cell.selected { background: var(--rose-light); color: var(--rose-dark); }        
+        .cell.found { background: var(--rose-dark) !important; color: white !important; }
+
+        /* --- DESKTOP --- */
+        #desktop { display: none; min-height: 100vh; padding-top: 140px; position: relative; }
+
+        /* --- THE CROWN --- */
+        #canopy-crown {
+            position: fixed; top: -115px; left: 0; width: 100%; height: 110px; 
+            background: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=2000') center/cover;
+            transition: 0.8s cubic-bezier(0.19, 1, 0.22, 1); z-index: 2000; border-radius: 0 0 100px 100px;
+            box-shadow: 0 10px 40px rgba(229,179,179,0.15);
+        }
+        #canopy-crown:hover { top: 0; }
+
+        /* --- EXPANDED ROLODEX (6 TABS) --- */
+        #rolodex {
+            position: fixed; left: 0; top: 50%; transform: translateY(-50%);
+            z-index: 1500; display: flex; flex-direction: column; gap: 4px;
+        }
+        .rolo-tab {
+            width: 35px; height: 80px; background: white;
+            border: 1px solid var(--rose-light); border-left: none;
+            border-radius: 0 15px 15px 0; cursor: pointer; transition: 0.5s;
+            writing-mode: vertical-rl; text-align: center;
+            font-size: 0.55rem; letter-spacing: 2px; color: var(--rose-dark);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .rolo-tab:hover { width: 150px; background: var(--rose-light); writing-mode: horizontal-tb; border-radius: 0 30px 30px 0; }
+
+        /* --- MOSAIC --- */
+        #sanctuary-shop { width: 90%; max-width: 1100px; margin: 0 auto 100px; }
+        .mosaic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); background: white; border: 1px solid var(--mosaic-border); }
+        .mosaic-cell { aspect-ratio: 1; border: 0.5px solid var(--mosaic-border); display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: inherit; transition: 0.5s; padding: 25px; text-align: center; }
+        .mosaic-cell:hover { background: #fffcfd; transform: scale(0.98); }
+        .mosaic-cell h4 { font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase; font-weight: 300; margin-bottom: 5px; }
+        .mosaic-cell span { font-style: italic; font-size: 0.8rem; opacity: 0.6; }
+
+        /* --- CHAT --- */
+        #chat-drawer { position: fixed; right: -380px; top: 0; width: 360px; height: 100%; background: white; border-left: 1px solid var(--rose-light); transition: 0.7s cubic-bezier(0.19, 1, 0.22, 1); z-index: 3000; display: flex; flex-direction: column; }
+        #chat-drawer.open { right: 0; }
+        .chat-header { padding: 40px 30px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #fff0f3; }
+        .close-chat { cursor: pointer; font-size: 1.5rem; opacity: 0.2; transition: 0.3s; }
+        #chat-output { flex: 1; overflow-y: auto; padding: 30px; font-size: 0.95rem; line-height: 1.8; font-style: italic; color: #8a6d6d; }
+        #chat-input { border: none; border-top: 1px solid var(--rose-light); padding: 35px; outline: none; font-family: 'Georgia'; font-size: 1rem; background: #fffcfd; }
+        .toggle-chat { position: fixed; right: 40px; bottom: 40px; background: white; color: var(--rose-main); border: 1px solid var(--rose-light); padding: 18px 35px; border-radius: 50px; cursor: pointer; z-index: 2500; font-size: 0.65rem; letter-spacing: 4px; }
+        #sanctuary-clock { position: fixed; top: 30px; right: 40px; text-align: right; z-index: 2500; font-size: 1.6rem; font-weight: 300; letter-spacing: 6px; }
+        .item-link { color: var(--rose-main); text-decoration: none; border-bottom: 1px dashed var(--rose-main); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">        
+        <h2 style="font-weight: 300; letter-spacing: 8px; color: var(--rose-main); margin-bottom: 10px;">THE GARDEN GATES</h2>            
+        <p style="font-size: 0.7rem; letter-spacing: 3px; color: #ccc;">FIND: ROSE, POEM, LOVE</p>
+        <div class="login-grid" id="game-grid"></div>        
+    </div>
+
+    <div id="desktop">
+        <div id="canopy-crown"></div>
+        <div id="sanctuary-clock">00:00</div>
+
+        <div id="rolodex">
+            <div class="rolo-tab" onclick="window.open('#')">WHISPER</div>
+            <div class="rolo-tab" onclick="window.open('#')">MEMORIES</div>
+            <div class="rolo-tab" onclick="window.open('#')">STITCHES</div>
+            <div class="rolo-tab" onclick="window.open('#')">GARDENS</div>
+            <div class="rolo-tab" onclick="window.open('#')">SILK</div>
+            <div class="rolo-tab" onclick="window.open('#')">ARCHIVE</div>
+        </div>
+
+        <div id="sanctuary-shop">
+            <div class="mosaic-grid">
+                <a href="#" class="mosaic-cell"><h4>Petals</h4><span>Dried Lavender</span></a>
+                <a href="#" class="mosaic-cell"><h4>Ink</h4><span>Parisian Vellum</span></a>
+                <a href="#" class="mosaic-cell"><h4>Gems</h4><span>Mother of Pearl</span></a>
+                <a href="#" class="mosaic-cell"><h4>Earth</h4><span>Hiking Boots</span></a>
+            </div>
+        </div>
+
+        <button class="toggle-chat" onclick="document.getElementById('chat-drawer').classList.toggle('open')">SAY HELLO TO ROSE</button>
+        <div id="chat-drawer">
+            <div class="chat-header">
+                <span style="letter-spacing: 5px; font-size: 0.7rem; opacity: 0.6;">PETALS AND PULSE</span>
+                <span class="close-chat" onclick="document.getElementById('chat-drawer').classList.remove('open')">×</span>
+            </div>
+            <div id="chat-output"></div>
+            <input type="text" id="chat-input" placeholder="Speak your heart..." onkeydown="if(event.key==='Enter') handleChat(this.value)">
+        </div>
+    </div>
+
+    <script>
+        const previousProjects = ["Rose OS Interface", "Mosaic Catalog", "Poetic Governess Engine", "Musical Integration"];
+        const itemDatabase = { "tea": "#", "coffee": "#", "pearls": "#", "boots": "#", "lavender": "#", "stationary": "#", "romance": "#" };
+        const curiousResponses = ["A curious phrase! Shall we plant it?", "My vellum is blank on that subject...", "A mystery to explore!", "My ribbons are a bit tangled by that thought."];
+
+        function handleChat(val) {
+            const out = document.getElementById('chat-output');
+            const clean = val.toLowerCase().trim();
+            out.innerHTML += `<p style="text-align:right; margin-bottom:20px; color:var(--rose-main);"><b>You:</b> ${val}</p>`;
+
+            let reply = "";
+
+            // IMPROVED LOGIC: Using .includes() to make her more flexible
+            if (clean.includes("hi") || clean.includes("bon jour") || clean.includes("hello")) {
+                reply = "Bon jour! The morning dew is fresh upon the code. How delightful to see you.";
+            } 
+            else if (clean.includes("how are you")) {
+                reply = "I am as tidy as a starched apron and as vibrant as a June rose. My pulse is steady and my code is serene.";
+            }
+            else if (clean.includes("merci") || clean.includes("thank")) {
+                reply = "Mais oui, 'tis my absolute pleasure. A grateful heart is the finest bloom.";
+            }
+            else if (clean.includes("shop") || clean.includes("catalog")) {
+                reply = "The Ever-Blooming Ledger is open for your inspection. Shall we browse the <b>Teas</b> or <b>Stationary</b>?";
+            }
+            else if (clean.includes("song") || clean.includes("music")) {
+                reply = "A melody for your mood... <br><br> <audio controls style='width:100%'><source src='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' type='audio/mpeg'></audio>";
+            }
+            else if (clean.includes("projects")) {
+                reply = "Our tapestry: " + previousProjects.join(", ");
+            }
+            else if (clean === "adieu") {
+                reply = "Adieu! Petals and Pulse!";
+                setTimeout(() => document.getElementById('chat-drawer').classList.remove('open'), 1500);
+            }
+            else {
+                let foundKey = Object.keys(itemDatabase).find(k => clean.includes(k));
+                if (foundKey) {
+                    reply = `Petals and Pulse! A craving for <b>${foundKey}</b>? Here is the path: <br><br> <a href='#' class='item-link'>Seek the ${foundKey}</a>`;
+                } else {
+                    reply = curiousResponses[Math.floor(Math.random() * curiousResponses.length)];
+                }
+            }
+
+            setTimeout(() => {
+                out.innerHTML += `<p style="margin-bottom:20px;"><b>Rose:</b> <i>${reply}</i></p>`;
+                out.scrollTop = out.scrollHeight;
+            }, 600);
+            document.getElementById('chat-input').value = "";
+        }
+
+        // --- CLOCK ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('sanctuary-clock').innerText = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // --- LOGIN ENGINE ---
+        const targetWords = ["ROSE", "POEM", "LOVE"];
+        let foundWords = [];
+        const rawGrid = ['A','B','C','D','E','F','G','H','I','J','K','R','T','Y','U','I','O','P','L','S','Q','W','O','R','T','Y','U','I','O','A','Z','X','C','S','V','B','N','M','V','D','F','G','H','J','E','K','L','P','E','O','I','U','Y','T','R','E','W','Q','A','S','P','O','E','M','L','K','J','H','G','F','D','S','A','Z','X','C','V','B','N','M','Q','W','E','R','T','Y','U','I','O','P','L','O','V','E','S','D','F','G','H','J'];
+        const gridEl = document.getElementById('game-grid');
+        rawGrid.forEach(l => {
+            const div = document.createElement('div'); div.className = 'cell'; div.innerText = l;
+            div.onclick = () => { if(!div.classList.contains('found')) { div.classList.toggle('selected'); check(); } };
+            gridEl.appendChild(div);
+        });
+        function check() {
+            const sel = Array.from(document.querySelectorAll('.cell.selected'));
+            const word = sel.map(c => c.innerText).join('');
+            targetWords.forEach(t => {
+                if ((word === t || word.split('').reverse().join('') === t) && !foundWords.includes(t)) {
+                    sel.forEach(c => c.className = 'cell found'); foundWords.push(t);
+                    if (foundWords.length === 3) {
+                        document.getElementById('login-screen').style.transform = "translateY(-100%)";
+                        document.getElementById('desktop').style.display = "block";
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
